@@ -585,6 +585,12 @@ function poblarFiltros(comp){
   fill('flt-mod',[...new Set(comp.map(r=>r._modal).filter(Boolean))].sort());
   fill('flt-sed',[...new Set(comp.map(r=>r._sede).filter(Boolean))].sort());
   fill('flt-est',['OK','Diferencia en nota','Diferencia en semáforo','Diferencia en nota y semáforo','Falta en tabla nueva','Falta en tabla antigua','Duplicado']);
+  // Renombrar en el select para que sea más claro
+  const selEst=document.getElementById('flt-est');
+  selEst.querySelectorAll('option').forEach(o=>{
+    if(o.value==='Falta en tabla nueva') o.textContent='❌ No generado por la herramienta';
+    if(o.value==='Falta en tabla antigua') o.textContent='🆕 Registro nuevo (no estaba antes)';
+  });
 }
 
 function getFiltros(){
@@ -730,13 +736,13 @@ function seleccionarKPI(cod, comp){
 // ══════════════════════════════════════════════
 function estadoHTML(est){
   const m={
-    'OK':                          '<span class="estado-ok">✅ OK</span>',
-    'Diferencia en nota':          '<span class="estado-warn">⚠️ Dif. nota</span>',
-    'Diferencia en semáforo':      '<span class="estado-err">❌ Dif. semáforo</span>',
-    'Diferencia en nota y semáforo':'<span class="estado-err">❌ Nota y semáforo</span>',
-    'Falta en tabla nueva':        '<span class="estado-err">❌ Falta en nueva</span>',
-    'Falta en tabla antigua':      '<span class="estado-info">🔷 Solo en nueva</span>',
-    'Duplicado':                   '<span class="estado-gray">📎 Duplicado</span>',
+    'OK':                           '<span class="estado-ok">✅ OK — coincide</span>',
+    'Diferencia en nota':           '<span class="estado-warn">⚠️ Nota distinta</span>',
+    'Diferencia en semáforo':       '<span class="estado-err">❌ Semáforo distinto</span>',
+    'Diferencia en nota y semáforo':'<span class="estado-err">❌ Nota y semáforo distintos</span>',
+    'Falta en tabla nueva':         '<span class="estado-err">❌ La herramienta no lo ha generado</span>',
+    'Falta en tabla antigua':       '<span class="estado-info">🆕 Registro nuevo (no estaba antes)</span>',
+    'Duplicado':                    '<span class="estado-gray">📎 Duplicado</span>',
   };
   return m[est]||`<span class="estado-gray">${est}</span>`;
 }
@@ -822,11 +828,11 @@ function renderResumenGlobal(comp){
     <div class="rg-card rg-err" onclick="filtrarEstado('Diferencia en nota y semáforo')" title="Diferencia en ambos">
       <div class="rg-val">${c['Diferencia en nota y semáforo']||0}</div><div class="rg-lbl">🚨 Dif. ambas</div>
     </div>
-    <div class="rg-card rg-err" onclick="filtrarEstado('Falta en tabla nueva')" title="Falta en la tabla nueva">
-      <div class="rg-val">${c['Falta en tabla nueva']||0}</div><div class="rg-lbl">🔵 Falta nueva</div>
+    <div class="rg-card rg-err" onclick="filtrarEstado('Falta en tabla nueva')" title="Existía antes pero la herramienta no lo ha generado">
+      <div class="rg-val">${c['Falta en tabla nueva']||0}</div><div class="rg-lbl">❌ No generado</div>
     </div>
-    <div class="rg-card rg-info" onclick="filtrarEstado('Falta en tabla antigua')" title="Solo existe en la nueva">
-      <div class="rg-val">${c['Falta en tabla antigua']||0}</div><div class="rg-lbl">🔷 Solo nueva</div>
+    <div class="rg-card rg-info" onclick="filtrarEstado('Falta en tabla antigua')" title="Registro nuevo que no existía en la tabla anterior">
+      <div class="rg-val">${c['Falta en tabla antigua']||0}</div><div class="rg-lbl">🆕 Nuevo registro</div>
     </div>
     <div class="rg-card rg-gray" onclick="filtrarEstado('Duplicado')" title="Registros duplicados">
       <div class="rg-val">${c['Duplicado']||0}</div><div class="rg-lbl">📎 Duplicados</div>
