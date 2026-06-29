@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Validación Tabla Plana – Cumplimiento</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f8;color:#1a2f5a;font-size:13px}
+
+/* ══ TOPBAR ══ */
+#topbar{
+  position:fixed;top:0;left:0;right:0;height:56px;
+  background:#1a2f5a;display:flex;align-items:center;gap:16px;
+  padding:0 20px;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+#topbar .brand{color:#fff;font-size:1rem;font-weight:700;white-space:nowrap;margin-right:8px}
+#topbar .brand span{color:#7eb8f7}
+.upload-slot{display:flex;flex-direction:column;gap:2px;cursor:pointer}
+.upload-slot label{
+  font-size:.65rem;font-weight:700;color:#7eb8f7;text-transform:uppercase;letter-spacing:.06em;cursor:pointer
+}
+.upload-slot .uf{
+  font-size:.75rem;color:#ccd6f6;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;max-width:160px;cursor:pointer
+}
+.upload-slot .uf.loaded{color:#5dde8c}
+.upload-slot input[type=file]{display:none}
+#btn-analizar{
+  margin-left:auto;background:#4a9ff5;color:#fff;border:none;
+  border-radius:7px;padding:8px 20px;font-size:.82rem;font-weight:700;
+  cursor:pointer;white-space:nowrap;transition:background .15s;
+}
+#btn-analizar:hover{background:#3a8de0}
+#btn-analizar:disabled{background:#445a7a;cursor:not-allowed;color:#8aacce}
+
+/* ══ LAYOUT ══ */
+#layout{display:flex;margin-top:56px;height:calc(100vh - 56px)}
+
+/* ── Panel izquierdo: lista KPIs ── */
+#panel-kpis{
+  width:290px;flex-shrink:0;background:#fff;border-right:1px solid #dde3f0;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+#panel-kpis .ph{
+  padding:12px 14px 8px;border-bottom:1px solid #eef0f8;
+  font-size:.7rem;font-weight:700;color:#4a6fa5;text-transform:uppercase;letter-spacing:.06em
+}
+#kpi-search{
+  margin:8px 10px;padding:6px 10px;border:1px solid #c8d4e8;border-radius:6px;
+  font-size:.8rem;width:calc(100% - 20px);outline:none;
+}
+#kpi-search:focus{border-color:#4a6fa5}
+#kpi-list{overflow-y:auto;flex:1}
+.kpi-item{
+  display:flex;align-items:center;gap:10px;padding:9px 14px;
+  border-bottom:1px solid #f0f2f8;cursor:pointer;transition:background .1s;
+}
+.kpi-item:hover{background:#f4f6fb}
+.kpi-item.active{background:#e8edf8;border-left:3px solid #4a6fa5}
+.kpi-item.active .kn{font-weight:700}
+.kpi-icon{font-size:1.2rem;flex-shrink:0;width:22px;text-align:center}
+.kpi-info{flex:1;min-width:0}
+.kn{font-size:.82rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ks{font-size:.68rem;color:#888;margin-top:1px}
+.kpi-badge{
+  flex-shrink:0;font-size:.68rem;font-weight:700;padding:2px 7px;
+  border-radius:10px;white-space:nowrap;
+}
+.kb-ok{background:#d4f5e0;color:#1a7a3a}
+.kb-err{background:#fde8e8;color:#a01010}
+.kb-warn{background:#fff3cd;color:#7a5500}
+.kb-info{background:#e3eeff;color:#1a4a9a}
+
+/* ── Panel derecho: detalle ── */
+#panel-detail{
+  flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f0f2f8;
+}
+
+/* Barra de filtros */
+#filtros-bar{
+  background:#fff;border-bottom:1px solid #dde3f0;
+  padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+#filtros-bar label{font-size:.68rem;font-weight:700;color:#4a6fa5;text-transform:uppercase;letter-spacing:.05em}
+#filtros-bar select{
+  padding:5px 8px;border:1px solid #c8d4e8;border-radius:6px;
+  font-size:.78rem;background:#fff;color:#1a2f5a;outline:none;min-width:120px;
+}
+#filtros-bar select:focus{border-color:#4a6fa5}
+#btn-reset-filtros{
+  margin-left:auto;background:none;border:1px solid #c8d4e8;border-radius:6px;
+  padding:5px 12px;font-size:.75rem;color:#4a6fa5;cursor:pointer;font-weight:600;
+}
+#btn-reset-filtros:hover{background:#e8edf8}
+
+/* Cabecera detalle con KPI seleccionado */
+#detail-header{
+  background:#fff;padding:14px 20px;border-bottom:1px solid #dde3f0;
+  display:flex;align-items:center;gap:14px;
+}
+#detail-header .big-icon{font-size:2rem}
+#detail-header .kpi-title{font-size:1.1rem;font-weight:700}
+#detail-header .kpi-sub{font-size:.8rem;color:#666;margin-top:2px}
+#detail-stats{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+.ds-card{
+  background:#f4f6fb;border-radius:8px;padding:8px 14px;text-align:center;min-width:72px;
+}
+.ds-val{font-size:1.3rem;font-weight:700}
+.ds-lbl{font-size:.62rem;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-top:1px}
+
+/* Tabla de detalle */
+#detail-body{flex:1;overflow:auto;padding:16px}
+.tabla-wrap{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+table{width:100%;border-collapse:collapse}
+thead th{
+  background:#1a2f5a;color:#fff;padding:9px 12px;text-align:left;
+  font-size:.75rem;font-weight:600;white-space:nowrap;position:sticky;top:0;
+}
+tbody tr{border-bottom:1px solid #eef0f8;transition:background .1s}
+tbody tr:hover{background:#f4f6fb}
+tbody td{padding:8px 12px;font-size:.78rem;vertical-align:middle;white-space:nowrap}
+.td-estado{white-space:nowrap}
+
+/* Estado visual grande */
+.estado-ok    {display:inline-flex;align-items:center;gap:5px;background:#d4f5e0;color:#1a7a3a;padding:4px 10px;border-radius:20px;font-weight:700;font-size:.75rem}
+.estado-err   {display:inline-flex;align-items:center;gap:5px;background:#fde8e8;color:#a01010;padding:4px 10px;border-radius:20px;font-weight:700;font-size:.75rem}
+.estado-warn  {display:inline-flex;align-items:center;gap:5px;background:#fff3cd;color:#7a5500;padding:4px 10px;border-radius:20px;font-weight:700;font-size:.75rem}
+.estado-info  {display:inline-flex;align-items:center;gap:5px;background:#e3eeff;color:#1a4a9a;padding:4px 10px;border-radius:20px;font-weight:700;font-size:.75rem}
+.estado-gray  {display:inline-flex;align-items:center;gap:5px;background:#eaeaea;color:#555;padding:4px 10px;border-radius:20px;font-weight:700;font-size:.75rem}
+
+/* Semáforo pastilla */
+.sem{display:inline-block;padding:2px 10px;border-radius:12px;font-weight:700;font-size:.72rem}
+.sem-verde   {background:#d4f5e0;color:#1a7a3a}
+.sem-amarillo{background:#fff3cd;color:#7a5500}
+.sem-naranja {background:#ffe0cc;color:#7a3000}
+.sem-rojo    {background:#fde8e8;color:#a01010}
+.sem-gris    {background:#eaeaea;color:#555}
+
+/* Nota */
+.nota-ok {color:#1a7a3a;font-weight:700}
+.nota-err{color:#a01010;font-weight:700}
+.diff-pos{color:#1a7a3a;font-size:.72rem}
+.diff-neg{color:#a01010;font-size:.72rem}
+
+/* ══ ESTADO VACÍO / LOADING ══ */
+#empty-state{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;color:#888;padding:40px;
+}
+#empty-state .big{font-size:3rem}
+#empty-state p{font-size:.9rem;text-align:center;max-width:340px;line-height:1.5}
+
+/* ══ TABS internas ══ */
+.inner-tabs{display:flex;gap:4px;padding:12px 16px 0;background:#fff;border-bottom:1px solid #dde3f0}
+.inner-tab{
+  padding:7px 14px;border:none;background:none;cursor:pointer;
+  font-size:.78rem;font-weight:600;color:#4a6fa5;border-radius:6px 6px 0 0;
+  border:1px solid transparent;border-bottom:none;
+}
+.inner-tab.active{background:#f0f2f8;color:#1a2f5a;border-color:#dde3f0}
+
+/* ══ RESUMEN GLOBAL ══ */
+#resumen-global{
+  background:#fff;border-bottom:1px solid #dde3f0;
+  padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+}
+.rg-card{
+  border-radius:8px;padding:6px 14px;text-align:center;min-width:80px;cursor:pointer;
+  transition:transform .1s;
+}
+.rg-card:hover{transform:scale(1.04)}
+.rg-val{font-size:1.25rem;font-weight:700}
+.rg-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.04em;margin-top:1px}
+.rg-ok   {background:#d4f5e0;color:#1a7a3a}
+.rg-err  {background:#fde8e8;color:#a01010}
+.rg-warn {background:#fff3cd;color:#7a5500}
+.rg-info {background:#e3eeff;color:#1a4a9a}
+.rg-gray {background:#eaeaea;color:#555}
+.rg-pct  {background:#1a2f5a;color:#fff}
+
+/* ══ MODAL columnas ══ */
+#modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;
+  align-items:center;justify-content:center;
+}
+#modal-overlay.open{display:flex}
+#modal-box{
+  background:#fff;border-radius:14px;padding:28px 32px;max-width:520px;width:90%;
+  box-shadow:0 8px 32px rgba(0,0,0,.2);
+}
+#modal-box h2{font-size:1rem;margin-bottom:16px;color:#1a2f5a}
+.modal-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.modal-group{display:flex;flex-direction:column;gap:4px;flex:1;min-width:140px}
+.modal-group label{font-size:.68rem;font-weight:700;color:#4a6fa5;text-transform:uppercase}
+.modal-group select{padding:6px 8px;border:1px solid #c8d4e8;border-radius:6px;font-size:.8rem}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.btn{padding:8px 20px;border:none;border-radius:7px;font-size:.8rem;font-weight:700;cursor:pointer}
+.btn-primary{background:#4a9ff5;color:#fff}
+.btn-primary:hover{background:#3a8de0}
+.btn-secondary{background:#eef0f8;color:#4a6fa5}
+.btn-secondary:hover{background:#dde3f0}
+
+/* ══ EXPORT ══ */
+#export-bar{padding:10px 16px;background:#fff;border-top:1px solid #eef0f8;display:flex;gap:8px}
+.btn-export{
+  padding:7px 16px;background:#1a2f5a;color:#fff;border:none;
+  border-radius:7px;font-size:.75rem;font-weight:700;cursor:pointer;
+}
+.btn-export:hover{background:#0d1e3a}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  #panel-kpis{width:100%;height:220px;flex-shrink:0}
+  #layout{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ TOPBAR ══════════ -->
+<div id="topbar">
+  <div class="brand">✅ Validación <span>Cumplimiento</span></div>
+
+  <div class="upload-slot">
+    <label for="f-ant">📄 Tabla antigua</label>
+    <label for="f-ant" class="uf" id="lbl-ant">Haz clic para subir…</label>
+    <input type="file" id="f-ant" accept=".csv,.xlsx,.xls">
+  </div>
+
+  <div class="upload-slot">
+    <label for="f-nue">📄 Tabla nueva</label>
+    <label for="f-nue" class="uf" id="lbl-nue">Haz clic para subir…</label>
+    <input type="file" id="f-nue" accept=".csv,.xlsx,.xls">
+  </div>
+
+  <div class="upload-slot">
+    <label for="f-mae">📋 Maestro KPIs</label>
+    <label for="f-mae" class="uf" id="lbl-mae">Haz clic para subir (opcional)</label>
+    <input type="file" id="f-mae" accept=".csv,.xlsx,.xls">
+  </div>
+
+  <button id="btn-analizar" disabled onclick="analizar()">▶ Analizar</button>
+</div>
+
+<!-- ══════════ MODAL DE COLUMNAS ══════════ -->
+<div id="modal-overlay">
+  <div id="modal-box">
+    <h2>⚙️ Configurar columnas</h2>
+    <p style="font-size:.8rem;color:#666;margin-bottom:14px">
+      No he podido detectar automáticamente todas las columnas. Selecciona cuál es cuál:
+    </p>
+    <div class="modal-row">
+      <div class="modal-group"><label>Código KPI</label><select id="mc-kpi"></select></div>
+      <div class="modal-group"><label>Nombre KPI</label><select id="mc-nom"></select></div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-group"><label>Título</label><select id="mc-tit"></select></div>
+      <div class="modal-group"><label>Ámbito</label><select id="mc-amb"></select></div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-group"><label>Modalidad</label><select id="mc-mod"></select></div>
+      <div class="modal-group"><label>Sede (opcional)</label><select id="mc-sed"></select></div>
+    </div>
+    <div class="modal-row">
+      <div class="modal-group"><label>Nota / resultado</label><select id="mc-nota"></select></div>
+      <div class="modal-group"><label>Semáforo</label><select id="mc-sem"></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmarColumnas()">Confirmar y analizar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ LAYOUT PRINCIPAL ══════════ -->
+<div id="layout">
+
+  <!-- ── Panel KPI ── -->
+  <div id="panel-kpis">
+    <div class="ph">KPIs</div>
+    <input type="text" id="kpi-search" placeholder="🔍 Buscar KPI…" oninput="filtrarListaKPI()">
+    <div id="kpi-list">
+      <div id="empty-kpi" style="padding:20px;text-align:center;color:#aaa;font-size:.8rem">
+        Sube los ficheros y pulsa Analizar
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Panel detalle ── -->
+  <div id="panel-detail">
+
+    <!-- Estado vacío inicial -->
+    <div id="empty-state">
+      <div class="big">📊</div>
+      <p>Sube la <strong>tabla antigua</strong> y la <strong>tabla nueva</strong> en la barra superior y pulsa <strong>Analizar</strong>.<br><br>
+      Después selecciona un KPI de la lista para ver su comparativa.</p>
+    </div>
+
+    <!-- Resumen global (oculto hasta analizar) -->
+    <div id="resumen-global" style="display:none"></div>
+
+    <!-- Filtros (ocultos hasta analizar) -->
+    <div id="filtros-bar" style="display:none">
+      <label>Título</label>
+      <select id="flt-tit" onchange="aplicarFiltros()"><option value="">Todos</option></select>
+      <label>Ámbito</label>
+      <select id="flt-amb" onchange="aplicarFiltros()"><option value="">Todos</option></select>
+      <label>Modalidad</label>
+      <select id="flt-mod" onchange="aplicarFiltros()"><option value="">Todos</option></select>
+      <label>Sede</label>
+      <select id="flt-sed" onchange="aplicarFiltros()"><option value="">Todos</option></select>
+      <label>Estado</label>
+      <select id="flt-est" onchange="aplicarFiltros()"><option value="">Todos</option></select>
+      <button id="btn-reset-filtros" onclick="resetFiltros()">✕ Limpiar</button>
+    </div>
+
+    <!-- Cabecera KPI seleccionado (oculto) -->
+    <div id="detail-header" style="display:none">
+      <div class="big-icon" id="dh-icon">📋</div>
+      <div>
+        <div class="kpi-title" id="dh-title">—</div>
+        <div class="kpi-sub" id="dh-sub">—</div>
+      </div>
+      <div id="detail-stats"></div>
+    </div>
+
+    <!-- Pestañas internas -->
+    <div id="inner-tabs-wrap" style="display:none">
+      <div class="inner-tabs">
+        <button class="inner-tab active" onclick="showInnerTab('tab-comp',this)">🔍 Comparativa</button>
+        <button class="inner-tab" onclick="showInnerTab('tab-todos',this)">📋 Todos los registros</button>
+      </div>
+    </div>
+
+    <!-- Cuerpo detalle -->
+    <div id="detail-body" style="display:none">
+      <div id="tab-comp"></div>
+      <div id="tab-todos" style="display:none"></div>
+    </div>
+
+    <!-- Export -->
+    <div id="export-bar" style="display:none">
+      <button class="btn-export" onclick="exportKPI()">📥 Exportar KPI actual</button>
+      <button class="btn-export" onclick="exportTodo()">📥 Exportar informe completo</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// ESTADO GLOBAL
+// ══════════════════════════════════════════════
+const G = {
+  ant:[], nue:[], mae:[],
+  comp:[], kpiActual:null, kpisFiltrados:[],
+  cols:{ kpi:'', nom:'', tit:'', amb:'', mod:'', sed:'', nota:'', sem:'' },
+  charts:{},
+};
+
+// ══════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════
+function normT(v){ if(!v&&v!==0)return ''; return v.toString().trim().toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+function normN(v){ const n=parseFloat(String(v).replace(',','.')); return isNaN(n)?null:Math.round(n*10000)/10000; }
+function normSem(v){
+  const m={'VERDE':'VERDE','GREEN':'VERDE','V':'VERDE','AMARILLO':'AMARILLO','YELLOW':'AMARILLO',
+           'A':'AMARILLO','NARANJA':'NARANJA','ORANGE':'NARANJA','N':'NARANJA','ROJO':'ROJO',
+           'RED':'ROJO','R':'ROJO','GRIS':'GRIS','GREY':'GRIS','GRAY':'GRIS','G':'GRIS',
+           'NO APLICA':'NO APLICA','NA':'NO APLICA','N/A':'NO APLICA'};
+  const t=normT(v); return m[t]||t;
+}
+function uniq(arr,col){ return [...new Set(arr.map(r=>r[col]).filter(v=>v!==''&&v!=null))].sort(); }
+
+function semClass(s){
+  const m={'VERDE':'sem-verde','AMARILLO':'sem-amarillo','NARANJA':'sem-naranja','ROJO':'sem-rojo'};
+  return m[normSem(s)]||'sem-gris';
+}
+function semLabel(s){ const n=normSem(s); return n||s||'—'; }
+
+// ══════════════════════════════════════════════
+// LECTURA DE FICHEROS
+// ══════════════════════════════════════════════
+function readFile(input, labelId, key){
+  input.addEventListener('change', function(){
+    const file = this.files[0]; if(!file) return;
+    document.getElementById(labelId).textContent = file.name;
+    document.getElementById(labelId).classList.add('loaded');
+    const reader = new FileReader();
+    reader.onload = e => {
+      const wb = XLSX.read(e.target.result,{type:'binary',raw:false});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      G[key] = XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});
+    };
+    reader.readAsBinaryString(file);
+    checkReady();
+  });
+}
+function checkReady(){
+  // Pequeño delay para que se cargue el fichero
+  setTimeout(()=>{
+    document.getElementById('btn-analizar').disabled = !(G.ant.length && G.nue.length);
+  },200);
+}
+
+readFile(document.getElementById('f-ant'),'lbl-ant','ant');
+readFile(document.getElementById('f-nue'),'lbl-nue','nue');
+readFile(document.getElementById('f-mae'),'lbl-mae','mae');
+
+// ══════════════════════════════════════════════
+// DETECCIÓN AUTOMÁTICA DE COLUMNAS
+// ══════════════════════════════════════════════
+function detectCol(cols, hints){
+  const c = cols.map(normT);
+  for(const h of hints){
+    const i = c.findIndex(x => x===normT(h));
+    if(i>=0) return cols[i];
+  }
+  for(const h of hints){
+    const i = c.findIndex(x => x.includes(normT(h)));
+    if(i>=0) return cols[i];
+  }
+  return null;
+}
+
+function autoDetect(cols){
+  return {
+    kpi:  detectCol(cols,['codigo_kpi','cod_kpi','kpi_cod','codigo kpi','kpi']) || cols[0],
+    nom:  detectCol(cols,['nombre_kpi','nombre kpi','kpi_nombre','nombre','descripcion']) || cols[1]||cols[0],
+    tit:  detectCol(cols,['titulo','title','tit','titulación','titulacion']) || '',
+    amb:  detectCol(cols,['ambito','ámbito','ambit','scope','area']) || '',
+    mod:  detectCol(cols,['modalidad','modal','modality','modo']) || '',
+    sed:  detectCol(cols,['sede','campus','centro','location']) || '',
+    nota: detectCol(cols,['nota_resultado','nota resultado','nota','resultado','puntuacion','score','valor']) || '',
+    sem:  detectCol(cols,['semaforo','semáforo','traffic','color','luz','resultado_semaforo']) || '',
+  };
+}
+
+function analizar(){
+  if(!G.ant.length || !G.nue.length){ alert('Sube ambas tablas primero.'); return; }
+  const cols = Object.keys(G.ant[0]);
+  const det  = autoDetect(cols);
+
+  // Si faltan columnas críticas → mostrar modal
+  if(!det.kpi || !det.nota || !det.sem){
+    abrirModal(cols, det);
+  } else {
+    Object.assign(G.cols, det);
+    ejecutarAnalisis();
+  }
+}
+
+// ══════════════════════════════════════════════
+// MODAL DE CONFIGURACIÓN
+// ══════════════════════════════════════════════
+function abrirModal(cols, det){
+  const ids = ['mc-kpi','mc-nom','mc-tit','mc-amb','mc-mod','mc-sed','mc-nota','mc-sem'];
+  const keys= ['kpi','nom','tit','amb','mod','sed','nota','sem'];
+  ids.forEach((id,i)=>{
+    const sel = document.getElementById(id);
+    const prefix = i>=6 ? '' : '<option value="">(ninguna)</option>';
+    sel.innerHTML = prefix + cols.map(c=>`<option value="${c}"${c===det[keys[i]]?' selected':''}>${c}</option>`).join('');
+  });
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); }
+function confirmarColumnas(){
+  const ids = ['mc-kpi','mc-nom','mc-tit','mc-amb','mc-mod','mc-sed','mc-nota','mc-sem'];
+  const keys= ['kpi','nom','tit','amb','mod','sed','nota','sem'];
+  ids.forEach((id,i)=>{ G.cols[keys[i]]=document.getElementById(id).value; });
+  closeModal();
+  ejecutarAnalisis();
+}
+
+// ══════════════════════════════════════════════
+// ANÁLISIS PRINCIPAL
+// ══════════════════════════════════════════════
+function ejecutarAnalisis(){
+  const {kpi,nom,tit,amb,mod,sed,nota,sem} = G.cols;
+
+  function buildKey(r){
+    return [kpi,tit,amb,mod,sed].filter(c=>c).map(c=>normT(r[c]||'')).join('|');
+  }
+
+  // Normalizar ambas tablas
+  const antN = G.ant.map(r=>({...r, _k:buildKey(r), _nota:normN(r[nota]), _sem:normSem(r[sem])}));
+  const nueN = G.nue.map(r=>({...r, _k:buildKey(r), _nota:normN(r[nota]), _sem:normSem(r[sem])}));
+
+  // Índices
+  const idxAnt={}, idxNue={};
+  antN.forEach(r=>{ idxAnt[r._k]=idxAnt[r._k]||[]; idxAnt[r._k].push(r); });
+  nueN.forEach(r=>{ idxNue[r._k]=idxNue[r._k]||[]; idxNue[r._k].push(r); });
+
+  // Claves duplicadas
+  const dupAnt=new Set(Object.keys(idxAnt).filter(k=>idxAnt[k].length>1));
+  const dupNue=new Set(Object.keys(idxNue).filter(k=>idxNue[k].length>1));
+
+  // Merge
+  const comp=[];
+  const vistas=new Set();
+  antN.forEach(ra=>{
+    const k=ra._k; vistas.add(k);
+    const rns=idxNue[k]||[];
+    if(dupAnt.has(k)||dupNue.has(k)){ comp.push(makeRow(ra,rns[0]||null,'Duplicado')); return; }
+    if(!rns.length){ comp.push(makeRow(ra,null,'Falta en tabla nueva')); return; }
+    comp.push(makeRow(ra,rns[0],null));
+  });
+  nueN.forEach(rn=>{
+    if(!vistas.has(rn._k)) comp.push(makeRow(null,rn,'Falta en tabla antigua'));
+  });
+
+  G.comp = comp;
+
+  // Poblar filtros
+  poblarFiltros(comp);
+  // Poblar lista KPI
+  poblarListaKPI(comp);
+  // Resumen global
+  renderResumenGlobal(comp);
+  // Mostrar UI
+  mostrarUI();
+}
+
+function makeRow(ra,rn,forzar){
+  const {kpi,nom,tit,amb,mod,sed} = G.cols;
+  const get=(r,c)=>r&&c?String(r[c]||'').trim():'';
+  const row={
+    _kpi_cod: get(ra,kpi)||get(rn,kpi),
+    _kpi_nom: get(ra,nom)||get(rn,nom),
+    _titulo:  get(ra,tit)||get(rn,tit),
+    _ambito:  get(ra,amb)||get(rn,amb),
+    _modal:   get(ra,mod)||get(rn,mod),
+    _sede:    get(ra,sed)||get(rn,sed),
+    nota_ant: ra?ra._nota:null,
+    nota_nue: rn?rn._nota:null,
+    sem_ant:  ra?ra._sem:'',
+    sem_nue:  rn?rn._sem:'',
+    _ra:ra, _rn:rn,
+  };
+  row.diff_nota = (row.nota_ant!==null&&row.nota_nue!==null) ? Math.round((row.nota_nue-row.nota_ant)*10000)/10000 : null;
+  const okN = row.nota_ant===row.nota_nue;
+  const okS = row.sem_ant===row.sem_nue;
+  if(forzar){ row.estado=forzar; }
+  else if(okN&&okS)        row.estado='OK';
+  else if(!okN&&!okS)      row.estado='Diferencia en nota y semáforo';
+  else if(!okN)            row.estado='Diferencia en nota';
+  else                     row.estado='Diferencia en semáforo';
+  return row;
+}
+
+// ══════════════════════════════════════════════
+// FILTROS Y LISTA KPI
+// ══════════════════════════════════════════════
+function poblarFiltros(comp){
+  const fill=(id,vals)=>{
+    const sel=document.getElementById(id);
+    sel.innerHTML='<option value="">Todos</option>'+vals.map(v=>`<option>${v}</option>`).join('');
+  };
+  fill('flt-tit',[...new Set(comp.map(r=>r._titulo).filter(Boolean))].sort());
+  fill('flt-amb',[...new Set(comp.map(r=>r._ambito).filter(Boolean))].sort());
+  fill('flt-mod',[...new Set(comp.map(r=>r._modal).filter(Boolean))].sort());
+  fill('flt-sed',[...new Set(comp.map(r=>r._sede).filter(Boolean))].sort());
+  fill('flt-est',['OK','Diferencia en nota','Diferencia en semáforo','Diferencia en nota y semáforo','Falta en tabla nueva','Falta en tabla antigua','Duplicado']);
+}
+
+function getFiltros(){
+  return {
+    tit: document.getElementById('flt-tit').value,
+    amb: document.getElementById('flt-amb').value,
+    mod: document.getElementById('flt-mod').value,
+    sed: document.getElementById('flt-sed').value,
+    est: document.getElementById('flt-est').value,
+  };
+}
+
+function compFiltrado(){
+  const f=getFiltros();
+  return G.comp.filter(r=>
+    (!f.tit||r._titulo===f.tit)&&
+    (!f.amb||r._ambito===f.amb)&&
+    (!f.mod||r._modal===f.mod)&&
+    (!f.sed||r._sede===f.sed)&&
+    (!f.est||r.estado===f.est)
+  );
+}
+
+function resetFiltros(){
+  ['flt-tit','flt-amb','flt-mod','flt-sed','flt-est'].forEach(id=>document.getElementById(id).value='');
+  aplicarFiltros();
+}
+
+function aplicarFiltros(){
+  poblarListaKPI(compFiltrado());
+  if(G.kpiActual) seleccionarKPI(G.kpiActual, compFiltrado());
+  renderResumenGlobal(compFiltrado());
+}
+
+// ══════════════════════════════════════════════
+// LISTA DE KPIS (panel izquierdo)
+// ══════════════════════════════════════════════
+function estadoKPI(filas){
+  const estados=filas.map(r=>r.estado);
+  if(estados.some(e=>e==='Diferencia en nota y semáforo'||e==='Falta en tabla nueva'||e==='Duplicado')) return 'err';
+  if(estados.some(e=>e!=='OK')) return 'warn';
+  return 'ok';
+}
+
+function poblarListaKPI(comp){
+  // Agrupar por KPI
+  const porKPI={};
+  comp.forEach(r=>{
+    const k=r._kpi_cod||'(sin código)';
+    porKPI[k]=porKPI[k]||{cod:k,nom:r._kpi_nom,filas:[]};
+    porKPI[k].filas.push(r);
+  });
+
+  const lista=Object.values(porKPI).sort((a,b)=>a.cod.localeCompare(b.cod));
+  G.kpisFiltrados=lista;
+
+  const q=normT(document.getElementById('kpi-search').value);
+  const filtrada=q?lista.filter(k=>normT(k.cod).includes(q)||normT(k.nom).includes(q)):lista;
+
+  const ul=document.getElementById('kpi-list');
+  if(!filtrada.length){ ul.innerHTML='<div style="padding:20px;text-align:center;color:#aaa;font-size:.8rem">Sin resultados</div>'; return; }
+
+  ul.innerHTML=filtrada.map(k=>{
+    const est=estadoKPI(k.filas);
+    const icon= est==='ok'?'✅': est==='warn'?'⚠️':'❌';
+    const nOk=k.filas.filter(r=>r.estado==='OK').length;
+    const nTot=k.filas.length;
+    const badgeCls= est==='ok'?'kb-ok': est==='warn'?'kb-warn':'kb-err';
+    const pct=Math.round(nOk/nTot*100);
+    const active=G.kpiActual===k.cod?'active':'';
+    return `<div class="kpi-item ${active}" data-cod="${k.cod}" onclick="seleccionarKPI('${k.cod}')">
+      <div class="kpi-icon">${icon}</div>
+      <div class="kpi-info">
+        <div class="kn">${k.cod}</div>
+        <div class="ks">${k.nom||''}</div>
+      </div>
+      <div class="kpi-badge ${badgeCls}">${pct}% OK</div>
+    </div>`;
+  }).join('');
+}
+
+function filtrarListaKPI(){
+  poblarListaKPI(compFiltrado());
+}
+
+// ══════════════════════════════════════════════
+// SELECCIÓN DE KPI → DETALLE
+// ══════════════════════════════════════════════
+function seleccionarKPI(cod, comp){
+  G.kpiActual=cod;
+  const datos=comp||compFiltrado();
+  const filas=datos.filter(r=>r._kpi_cod===cod);
+  if(!filas.length) return;
+
+  // Marcar activo en lista
+  document.querySelectorAll('.kpi-item').forEach(el=>{
+    el.classList.toggle('active', el.dataset.cod===cod);
+  });
+
+  const nom=filas[0]._kpi_nom||cod;
+  const est=estadoKPI(filas);
+  const icon=est==='ok'?'✅':est==='warn'?'⚠️':'❌';
+  document.getElementById('dh-icon').textContent=icon;
+  document.getElementById('dh-title').textContent=`${cod} – ${nom}`;
+  document.getElementById('dh-sub').textContent=
+    filas[0]._ambito ? `Ámbito: ${filas[0]._ambito}` : '';
+
+  // Stats del KPI
+  const c={};filas.forEach(r=>c[r.estado]=(c[r.estado]||0)+1);
+  const nOk=c['OK']||0, nTot=filas.length;
+  const pct=Math.round(nOk/nTot*100);
+
+  document.getElementById('detail-stats').innerHTML=`
+    <div class="ds-card" style="background:${pct===100?'#d4f5e0':pct>=70?'#fff3cd':'#fde8e8'};color:${pct===100?'#1a7a3a':pct>=70?'#7a5500':'#a01010'}">
+      <div class="ds-val">${pct}%</div><div class="ds-lbl">OK</div>
+    </div>
+    <div class="ds-card" style="background:#d4f5e0;color:#1a7a3a">
+      <div class="ds-val">${nOk}</div><div class="ds-lbl">Correctos</div>
+    </div>
+    <div class="ds-card" style="background:#fde8e8;color:#a01010">
+      <div class="ds-val">${nTot-nOk}</div><div class="ds-lbl">Incidencias</div>
+    </div>
+    <div class="ds-card" style="background:#f4f6fb;color:#1a2f5a">
+      <div class="ds-val">${nTot}</div><div class="ds-lbl">Total</div>
+    </div>
+  `;
+
+  renderTablaComp(filas);
+  renderTodosRegistros(filas);
+
+  document.getElementById('detail-header').style.display='flex';
+  document.getElementById('inner-tabs-wrap').style.display='block';
+  document.getElementById('detail-body').style.display='block';
+  document.getElementById('export-bar').style.display='flex';
+  document.getElementById('empty-state').style.display='none';
+
+  // Mostrar primera pestaña
+  showInnerTab('tab-comp', document.querySelector('.inner-tab'));
+}
+
+// ══════════════════════════════════════════════
+// TABLA DE COMPARATIVA (pestaña Comparativa)
+// ══════════════════════════════════════════════
+function estadoHTML(est){
+  const m={
+    'OK':                          '<span class="estado-ok">✅ OK</span>',
+    'Diferencia en nota':          '<span class="estado-warn">⚠️ Dif. nota</span>',
+    'Diferencia en semáforo':      '<span class="estado-err">❌ Dif. semáforo</span>',
+    'Diferencia en nota y semáforo':'<span class="estado-err">❌ Nota y semáforo</span>',
+    'Falta en tabla nueva':        '<span class="estado-err">❌ Falta en nueva</span>',
+    'Falta en tabla antigua':      '<span class="estado-info">🔷 Solo en nueva</span>',
+    'Duplicado':                   '<span class="estado-gray">📎 Duplicado</span>',
+  };
+  return m[est]||`<span class="estado-gray">${est}</span>`;
+}
+
+function renderTablaComp(filas){
+  const {tit,amb,mod,sed}=G.cols;
+  const dimCols=[tit,amb,mod,sed].filter(Boolean);
+  const showDims=dimCols.length>0;
+
+  const thead=`<tr>
+    ${showDims?dimCols.map(c=>`<th>${c}</th>`).join(''):''}
+    <th>Nota antigua</th><th>Nota nueva</th><th>Diferencia</th>
+    <th>Semáforo antiguo</th><th>Semáforo nuevo</th>
+    <th>Estado</th>
+  </tr>`;
+
+  const tbody=filas.map(r=>{
+    const diffHtml=r.diff_nota===null?'—':
+      r.diff_nota>0?`<span class="diff-pos">▲ +${r.diff_nota}</span>`:
+      r.diff_nota<0?`<span class="diff-neg">▼ ${r.diff_nota}</span>`:
+      '<span style="color:#888">= 0</span>';
+    const notaAnt=r.nota_ant===null?'<span style="color:#aaa">—</span>':`<span class="${r.nota_ant===r.nota_nue?'nota-ok':'nota-err'}">${r.nota_ant}</span>`;
+    const notaNue=r.nota_nue===null?'<span style="color:#aaa">—</span>':`<span class="${r.nota_ant===r.nota_nue?'nota-ok':'nota-err'}">${r.nota_nue}</span>`;
+
+    // Calcular dimVals desde el row original
+    const src=r._ra||r._rn;
+    const dimVals=dimCols.map(c=>`<td>${src?String(src[c]||''):'—'}</td>`).join('');
+
+    return `<tr>
+      ${showDims?dimVals:''}
+      <td>${notaAnt}</td>
+      <td>${notaNue}</td>
+      <td>${diffHtml}</td>
+      <td><span class="sem ${semClass(r.sem_ant)}">${semLabel(r.sem_ant)||'—'}</span></td>
+      <td><span class="sem ${semClass(r.sem_nue)}">${semLabel(r.sem_nue)||'—'}</span></td>
+      <td class="td-estado">${estadoHTML(r.estado)}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('tab-comp').innerHTML=`
+    <div class="tabla-wrap">
+      <table><thead>${thead}</thead><tbody>${tbody}</tbody></table>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+// TODOS LOS REGISTROS (muestra datos en bruto)
+// ══════════════════════════════════════════════
+function renderTodosRegistros(filas){
+  const cols=G.ant.length?Object.keys(G.ant[0]):[];
+  const allRows=[...filas.map(r=>r._ra).filter(Boolean),...filas.filter(r=>!r._ra).map(r=>r._rn)];
+
+  const thead='<tr>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr>';
+  const tbody=allRows.map(r=>`<tr>${cols.map(c=>`<td>${String(r[c]??'')}</td>`).join('')}</tr>`).join('');
+
+  document.getElementById('tab-todos').innerHTML=`
+    <div class="tabla-wrap">
+      <table><thead>${thead}</thead><tbody>${tbody}</tbody></table>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+// RESUMEN GLOBAL (barra superior)
+// ══════════════════════════════════════════════
+function renderResumenGlobal(comp){
+  const c={};comp.forEach(r=>c[r.estado]=(c[r.estado]||0)+1);
+  const tot=comp.length;
+  const pct=tot?Math.round((c['OK']||0)/tot*100):0;
+
+  document.getElementById('resumen-global').innerHTML=`
+    <div class="rg-card rg-pct" title="Porcentaje de registros OK">
+      <div class="rg-val">${pct}%</div><div class="rg-lbl">Coincidencia</div>
+    </div>
+    <div class="rg-card rg-ok" onclick="filtrarEstado('')" title="Todos los registros OK">
+      <div class="rg-val">${c['OK']||0}</div><div class="rg-lbl">✅ OK</div>
+    </div>
+    <div class="rg-card rg-warn" onclick="filtrarEstado('Diferencia en nota')" title="Diferencia solo en nota">
+      <div class="rg-val">${c['Diferencia en nota']||0}</div><div class="rg-lbl">⚠️ Dif. nota</div>
+    </div>
+    <div class="rg-card rg-err" onclick="filtrarEstado('Diferencia en semáforo')" title="Diferencia solo en semáforo">
+      <div class="rg-val">${c['Diferencia en semáforo']||0}</div><div class="rg-lbl">❌ Dif. sem.</div>
+    </div>
+    <div class="rg-card rg-err" onclick="filtrarEstado('Diferencia en nota y semáforo')" title="Diferencia en ambos">
+      <div class="rg-val">${c['Diferencia en nota y semáforo']||0}</div><div class="rg-lbl">🚨 Dif. ambas</div>
+    </div>
+    <div class="rg-card rg-err" onclick="filtrarEstado('Falta en tabla nueva')" title="Falta en la tabla nueva">
+      <div class="rg-val">${c['Falta en tabla nueva']||0}</div><div class="rg-lbl">🔵 Falta nueva</div>
+    </div>
+    <div class="rg-card rg-info" onclick="filtrarEstado('Falta en tabla antigua')" title="Solo existe en la nueva">
+      <div class="rg-val">${c['Falta en tabla antigua']||0}</div><div class="rg-lbl">🔷 Solo nueva</div>
+    </div>
+    <div class="rg-card rg-gray" onclick="filtrarEstado('Duplicado')" title="Registros duplicados">
+      <div class="rg-val">${c['Duplicado']||0}</div><div class="rg-lbl">📎 Duplicados</div>
+    </div>
+    <div style="margin-left:auto;font-size:.7rem;color:#888;align-self:center">
+      ${tot} registros · Pulsa una tarjeta para filtrar
+    </div>
+  `;
+  document.getElementById('resumen-global').style.display='flex';
+}
+
+function filtrarEstado(est){
+  document.getElementById('flt-est').value=est;
+  aplicarFiltros();
+}
+
+// ══════════════════════════════════════════════
+// MOSTRAR UI DESPUÉS DE ANALIZAR
+// ══════════════════════════════════════════════
+function mostrarUI(){
+  document.getElementById('filtros-bar').style.display='flex';
+  document.getElementById('empty-state').style.display='none';
+}
+
+// ══════════════════════════════════════════════
+// PESTAÑAS INTERNAS
+// ══════════════════════════════════════════════
+function showInnerTab(id, btn){
+  document.querySelectorAll('#tab-comp,#tab-todos').forEach(el=>el.style.display='none');
+  document.querySelectorAll('.inner-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).style.display='block';
+  if(btn) btn.classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// EXPORTAR
+// ══════════════════════════════════════════════
+function exportKPI(){
+  if(!G.kpiActual) return;
+  const filas=compFiltrado().filter(r=>r._kpi_cod===G.kpiActual);
+  const data=filas.map(r=>({
+    KPI:r._kpi_cod, Nombre:r._kpi_nom, Titulo:r._titulo,
+    Ambito:r._ambito, Modalidad:r._modal, Sede:r._sede,
+    Nota_antigua:r.nota_ant, Nota_nueva:r.nota_nue, Diferencia:r.diff_nota,
+    Semaforo_antiguo:r.sem_ant, Semaforo_nuevo:r.sem_nue, Estado:r.estado,
+  }));
+  const ws=XLSX.utils.json_to_sheet(data);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,G.kpiActual.replace(/[:/\\?*\[\]]/g,'_'));
+  XLSX.writeFile(wb,`validacion_${G.kpiActual}.xlsx`);
+}
+
+function exportTodo(){
+  const data=G.comp.map(r=>({
+    KPI:r._kpi_cod, Nombre:r._kpi_nom, Titulo:r._titulo,
+    Ambito:r._ambito, Modalidad:r._modal, Sede:r._sede,
+    Nota_antigua:r.nota_ant, Nota_nueva:r.nota_nue, Diferencia:r.diff_nota,
+    Semaforo_antiguo:r.sem_ant, Semaforo_nuevo:r.sem_nue, Estado:r.estado,
+  }));
+  const ws=XLSX.utils.json_to_sheet(data);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Informe_Completo');
+  XLSX.writeFile(wb,'informe_validacion_completo.xlsx');
+}
+</script>
+</body>
+</html>

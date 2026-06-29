@@ -1,0 +1,11 @@
+﻿codigo_kpi,nombre_kpi,ambitos,aplicabilidad,estandar,regla_calculo,regla_semaforo,campo_dpi,valor_esperado_dpi,umbral_verde,umbral_amarillo,umbral_naranja
+KPI-01,Tasa de abandono,Enseñanza,Todos los títulos,EST-KPI-01,Fórmula automática KPI-01,Verde≥7 | Amarillo≥5 | Naranja≥3 | Rojo<3,DPI_TASA_ABANDONO,Porcentaje de alumnos que no completan el primer año,7.0,5.0,3.0
+KPI-02,Tasa de graduación,Enseñanza,Todos los títulos,EST-KPI-02,Fórmula automática KPI-02,Verde≥7 | Amarillo≥5 | Naranja≥3 | Rojo<3,DPI_TASA_GRAD,Porcentaje de graduados en tiempo nominal,7.0,5.0,3.0
+KPI-03,Satisfacción estudiantes,Orientación,Todos los títulos,EST-KPI-03,Fórmula automática KPI-03,Verde≥7 | Amarillo≥5 | Naranja≥3 | Rojo<3,DPI_SAT_EST,Puntuación media encuesta satisfacción,7.0,5.0,3.0
+KPI-04,Empleabilidad,Inserción,Todos los títulos,EST-KPI-04,Fórmula automática KPI-04,Verde≥7 | Amarillo≥5 | Naranja≥3 | Rojo<3,DPI_EMPLEAB,Porcentaje empleados al año de graduarse,7.0,5.0,3.0
+KPI-05,Movilidad saliente,Internacionalización,Todos los títulos,EST-KPI-05,Fórmula automática KPI-05,Verde≥7 | Amarillo≥5 | Naranja≥3 | Rojo<3,DPI_MOVIL,Número alumnos movilidad saliente,7.0,5.0,3.0
+KPI-06,Ratio PDI/estudiante,Recursos,Todos los títulos,EST-KPI-06,Fórmula automática KPI-06,Verde≥7 | Amarillo≥5 | Naranja≥3 | Rojo<3,DPI_RATIO_PDI,Ratio PDI equivalente a tiempo completo / alumnos,7.0,5.0,3.0
+KPI-07,Satisfacción egresados,Orientación,Todos los títulos,EST-KPI-07,Fórmula automática KPI-07,Verde≥7 | Amarillo≥5 | Naranja≥3 | Rojo<3,DPI_SAT_EGR,Puntuación media encuesta egresados,7.0,5.0,3.0
+KPI-08,Prácticas externas,Inserción,Todos los títulos,EST-KPI-08,Fórmula automática KPI-08,Verde≥7 | Amarillo≥5 | Naranja≥3 | Rojo<3,DPI_PRACT,Porcentaje alumnos con prácticas externas,7.0,5.0,3.0
+KPI-09,Publicaciones científicas,Investigación,Todos los títulos,EST-KPI-09,Fórmula automática KPI-09,Verde≥7 | Amarillo≥5 | Naranja≥3 | Rojo<3,DPI_PUB,Número publicaciones indexadas JCR/Scopus,7.0,5.0,3.0
+KPI-10,Acciones de mejora,Mejora continua,Todos los títulos,EST-KPI-10,Fórmula automática KPI-10,Verde≥7 | Amarillo≥5 | Naranja≥3 | Rojo<3,DPI_MEJORA,Número acciones de mejora implementadas,7.0,5.0,3.0
