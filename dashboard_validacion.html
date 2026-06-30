@@ -472,7 +472,7 @@ function normT(v){
     .normalize('NFD').replace(/[̀-ͯ]/g,'')
     .replace(/^(SI|SÍ|SÌ|S[Íi])$/, 'SI')
     .replace(/^(NO)$/, 'NO')
-    .replace(/^(N\/A|NA|NAN|NULL|NULO|-)$/, '');
+    .replace(/^(#N\/A|N\/A|NA|NAN|NULL|NULO|#VALUE!|#REF!|-)$/, '');
 }
 
 function normNum(v){
@@ -527,12 +527,12 @@ function similitudTexto(a,b){
   return inter/union;
 }
 
-// Comparar campo de texto largo (nombre, descripción):
-// Si la similitud es ≥ 0.75 → ok (solo puntuación/artículos distintos)
-// Si es < 0.75 → diferente (contenido realmente distinto)
-const UMBRAL_TEXTO=0.75;
+// Comparar campo de texto: fuzzy por palabras significativas.
+// Umbral 0.5 → si la mitad o más de las palabras coinciden → ok.
+// Cubre comas, puntos, artículos, reformulaciones leves.
+const UMBRAL_TEXTO=0.5;
 function cmpTexto(a,b){
-  if(cmpVal(a,b)==='ok') return 'ok';  // ya iguales tras normalización básica
+  if(cmpVal(a,b)==='ok') return 'ok';
   return similitudTexto(a,b)>=UMBRAL_TEXTO ? 'ok' : 'diferente';
 }
 
@@ -770,7 +770,7 @@ function makeComp(ro,rn,idxAnt,idxNue,forzar){
     else if(!rn)     estado='solo_orig';
     else if(!m.nue)  estado='excluido';
     else if(m.campo==='Semáforo') estado=cmpSemaforo(vo,vn);
-    else if(['Nombre KPI','Normativa de referencia','Artículo de normativa','Estándar/requerimiento'].includes(m.campo)) estado=cmpTexto(vo,vn);
+    else if(m.tipo==='comparar') estado=cmpTexto(vo,vn);
     else             estado=cmpVal(vo,vn);
     campos[m.campo]={orig:vo,nue:vn,estado,tipo:m.tipo};
   });
