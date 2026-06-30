@@ -417,25 +417,35 @@ function setupFileReader(inputId, lblId, hRowInputId, key){
     reader.onload = e => {
       try {
         const wb = XLSX.read(e.target.result, {type:'binary', raw:false});
-        const sheetName = wb.SheetNames[0];
-        const ws = wb.Sheets[sheetName];
+
+        // Escanear todas las hojas y elegir la que más columnas del MAPEO reconozca
+        let bestSheet = wb.SheetNames[0];
+        let bestScore = -1;
+        for(const sName of wb.SheetNames){
+          const ws = wb.Sheets[sName];
+          const sample = XLSX.utils.sheet_to_json(ws, {range:hRow, defval:'', raw:false, header:undefined});
+          if(!sample.length) continue;
+          const score = Object.keys(sample[0]).filter(c => MAPEO_NORM_SET.has(normCol(c))).length;
+          if(score > bestScore){ bestScore = score; bestSheet = sName; }
+        }
+
+        const ws = wb.Sheets[bestSheet];
         G[key] = XLSX.utils.sheet_to_json(ws, {range:hRow, defval:'', raw:false});
 
         const cols = G[key].length ? Object.keys(G[key][0]) : [];
         const colsEncontradas = cols.filter(c => MAPEO_NORM_SET.has(normCol(c)));
         const colsNO = cols.filter(c => !MAPEO_NORM_SET.has(normCol(c)));
 
-        // Panel de diagnóstico de lectura
-        mostrarDebugLectura(key, file.name, sheetName, hRow+1,
-          G[key].length, cols, colsEncontradas, colsNO);
+        mostrarDebugLectura(key, file.name, bestSheet, hRow+1,
+          G[key].length, cols, colsEncontradas, colsNO, wb.SheetNames);
 
         if(colsEncontradas.length === 0 && G[key].length > 0){
           lbl.style.color = '#ff8080';
-          lbl.textContent = `⚠ ${file.name} — 0 columnas reconocidas (fila ${hRow+1})`;
+          lbl.textContent = `⚠ ${file.name} — 0 cols reconocidas en "${bestSheet}"`;
         } else {
           lbl.style.color = '';
           lbl.classList.add('ok');
-          lbl.textContent = `✓ ${file.name} — ${colsEncontradas.length} cols · ${G[key].length} filas`;
+          lbl.textContent = `✓ ${file.name} · hoja "${bestSheet}" · ${colsEncontradas.length} cols · ${G[key].length} filas`;
         }
         document.getElementById('btn-analizar').disabled = !(G.ant.length && G.nue.length);
       } catch(err){
@@ -453,7 +463,7 @@ setupFileReader('f-ant','lbl-ant','hrow-ant','ant');
 setupFileReader('f-nue','lbl-nue','hrow-nue','nue');
 
 // ── Panel de debug de lectura ──────────────────────────
-function mostrarDebugLectura(key, fname, sheetName, hRow, nRows, cols, encontradas, noEncontradas){
+function mostrarDebugLectura(key, fname, sheetName, hRow, nRows, cols, encontradas, noEncontradas, allSheets){
   const panelId = 'debug-' + key;
   let panel = document.getElementById(panelId);
   if(!panel){
@@ -468,12 +478,16 @@ function mostrarDebugLectura(key, fname, sheetName, hRow, nRows, cols, encontrad
   panel.style.borderColor = encontradas.length>0?'#1a7a3a':'#a01010';
   const enc = encontradas.slice(0,8).map(c=>`<code style="background:#d4f5e0;padding:1px 5px;border-radius:4px;margin:1px;display:inline-block">${c}</code>`).join(' ');
   const noEnc = noEncontradas.slice(0,8).map(c=>`<code style="background:#fde8e8;padding:1px 5px;border-radius:4px;margin:1px;display:inline-block">${c}</code>`).join(' ');
+  const hojasInfo = allSheets && allSheets.length > 1
+    ? `<span style="color:#888;font-size:.68rem"> (hojas disponibles: ${allSheets.map(s=>s===sheetName?`<b>${s}</b>`:s).join(', ')})</span>`
+    : '';
   panel.innerHTML = `
     <div style="font-weight:700;color:#1a2f5a;margin-bottom:6px">
       ${key==='ant'?'📄 Tabla original':'📄 Nueva tabla'} — ${fname}
     </div>
     <div style="color:#555;margin-bottom:4px">
-      Hoja: <b>${sheetName}</b> · Fila de cabecera usada: <b>${hRow}</b> ·
+      Hoja seleccionada: <b>${sheetName}</b>${hojasInfo}<br>
+      Fila de cabecera usada: <b>${hRow}</b> ·
       Filas de datos leídas: <b>${nRows}</b> · Columnas totales: <b>${cols.length}</b>
     </div>
     <div style="margin-bottom:3px">
