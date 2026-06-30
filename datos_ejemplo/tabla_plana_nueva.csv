@@ -1,181 +1,20 @@
-﻿codigo_kpi,nombre_kpi,titulo,ambito,modalidad,sede,nota_resultado,semaforo,campo_dpi_1,campo_dpi_2
-KPI-01,Tasa de abandono,Grado en Educación Primaria,Enseñanza,Presencial,Madrid,5.09,Amarillo,VAL_KPI-01_GRA,418.1
-KPI-01,Tasa de abandono,Grado en Educación Primaria,Enseñanza,Presencial,Madrid,5.09,Amarillo,VAL_KPI-01_GRA,418.1
-KPI-01,Tasa de abandono,Grado en Educación Primaria,Enseñanza,Presencial,Barcelona,8.76,Verde,VAL_KPI-01_GRA,321.9
-KPI-01,Tasa de abandono,Grado en Educación Primaria,Enseñanza,Presencial,Valencia,7.0,Verde,VAL_KPI-01_GRA,326.7
-KPI-01,Tasa de abandono,Grado en Educación Primaria,Enseñanza,Online,Madrid,5.7,Amarillo,VAL_KPI-01_GRA,170.1
-KPI-01,Tasa de abandono,Grado en Educación Primaria,Enseñanza,Online,Barcelona,6.11,Amarillo,VAL_KPI-01_GRA,416.9
-KPI-01,Tasa de abandono,Grado en Educación Primaria,Enseñanza,Online,Valencia,5.74,Amarillo,VAL_KPI-01_GRA,436.5
-KPI-01,Tasa de abandono,Grado en ADE,Enseñanza,Presencial,Madrid,8.21,Verde,VAL_KPI-01_GRA,431.5
-KPI-01,Tasa de abandono,Grado en ADE,Enseñanza,Presencial,Barcelona,8.22,Verde,VAL_KPI-01_GRA,139.6
-KPI-01,Tasa de abandono,Grado en ADE,Enseñanza,Presencial,Valencia,4.48,Amarillo,VAL_KPI-01_GRA,470.7
-KPI-01,Tasa de abandono,Grado en ADE,Enseñanza,Online,Madrid,3.65,Amarillo,VAL_KPI-01_GRA,170.7
-KPI-01,Tasa de abandono,Grado en ADE,Enseñanza,Online,Barcelona,7.73,Verde,VAL_KPI-01_GRA,210.1
-KPI-01,Tasa de abandono,Grado en ADE,Enseñanza,Online,Valencia,5.13,Verde,VAL_KPI-01_GRA,444.8
-KPI-01,Tasa de abandono,Máster en Psicología,Enseñanza,Presencial,Madrid,4.6,Amarillo,VAL_KPI-01_MÁS,443.9
-KPI-01,Tasa de abandono,Máster en Psicología,Enseñanza,Presencial,Barcelona,8.13,Verde,VAL_KPI-01_MÁS,348.2
-KPI-01,Tasa de abandono,Máster en Psicología,Enseñanza,Presencial,Valencia,4.32,Rojo,VAL_KPI-01_MÁS,190.0
-KPI-01,Tasa de abandono,Máster en Psicología,Enseñanza,Online,Madrid,8.77,Verde,VAL_KPI-01_MÁS,69.9
-KPI-01,Tasa de abandono,Máster en Psicología,Enseñanza,Online,Barcelona,8.21,Verde,VAL_KPI-01_MÁS,20.5
-KPI-01,Tasa de abandono,Máster en Psicología,Enseñanza,Online,Valencia,7.65,Verde,VAL_KPI-01_MÁS,416.6
-KPI-02,Tasa de graduación,Grado en Educación Primaria,Enseñanza,Presencial,Madrid,6.68,Amarillo,VAL_KPI-02_GRA,451.3
-KPI-02,Tasa de graduación,Grado en Educación Primaria,Enseñanza,Presencial,Barcelona,3.22,Amarillo,VAL_KPI-02_GRA,401.3
-KPI-02,Tasa de graduación,Grado en Educación Primaria,Enseñanza,Presencial,Valencia,4.34,Amarillo,VAL_KPI-02_GRA,126.6
-KPI-02,Tasa de graduación,Grado en Educación Primaria,Enseñanza,Online,Madrid,5.14,Amarillo,VAL_KPI-02_GRA,65.7
-KPI-02,Tasa de graduación,Grado en Educación Primaria,Enseñanza,Online,Barcelona,4.14,Rojo,VAL_KPI-02_GRA,118.6
-KPI-02,Tasa de graduación,Grado en Educación Primaria,Enseñanza,Online,Valencia,7.59,Verde,VAL_KPI-02_GRA,39.8
-KPI-02,Tasa de graduación,Grado en ADE,Enseñanza,Presencial,Madrid,6.03,Amarillo,VAL_KPI-02_GRA,46.0
-KPI-02,Tasa de graduación,Grado en ADE,Enseñanza,Presencial,Barcelona,3.94,Amarillo,VAL_KPI-02_GRA,296.8
-KPI-02,Tasa de graduación,Grado en ADE,Enseñanza,Presencial,Valencia,7.96,Verde,VAL_KPI-02_GRA,58.6
-KPI-02,Tasa de graduación,Grado en ADE,Enseñanza,Online,Madrid,7.67,Verde,VAL_KPI-02_GRA,212.8
-KPI-02,Tasa de graduación,Grado en ADE,Enseñanza,Online,Barcelona,8.21,Verde,VAL_KPI-02_GRA,134.9
-KPI-02,Tasa de graduación,Grado en ADE,Enseñanza,Online,Valencia,9.4,Verde,VAL_KPI-02_GRA,55.7
-KPI-02,Tasa de graduación,Máster en Psicología,Enseñanza,Presencial,Madrid,3.91,Amarillo,VAL_KPI-02_MÁS,285.2
-KPI-02,Tasa de graduación,Máster en Psicología,Enseñanza,Presencial,Barcelona,5.71,Amarillo,VAL_KPI-02_MÁS,217.2
-KPI-02,Tasa de graduación,Máster en Psicología,Enseñanza,Presencial,Valencia,9.06,Verde,VAL_KPI-02_MÁS,293.2
-KPI-02,Tasa de graduación,Máster en Psicología,Enseñanza,Online,Madrid,4.42,Amarillo,VAL_KPI-02_MÁS,282.6
-KPI-02,Tasa de graduación,Máster en Psicología,Enseñanza,Online,Barcelona,3.63,Amarillo,VAL_KPI-02_MÁS,487.5
-KPI-02,Tasa de graduación,Máster en Psicología,Enseñanza,Online,Valencia,8.15,Verde,VAL_KPI-02_MÁS,349.8
-KPI-03,Satisfacción estudiantes,Grado en Educación Primaria,Orientación,Presencial,Madrid,4.02,Naranja,VAL_KPI-03_GRA,98.9
-KPI-03,Satisfacción estudiantes,Grado en Educación Primaria,Orientación,Presencial,Barcelona,4.35,Naranja,VAL_KPI-03_GRA,25.0
-KPI-03,Satisfacción estudiantes,Grado en Educación Primaria,Orientación,Presencial,Valencia,8.07,Verde,VAL_KPI-03_GRA,162.7
-KPI-03,Satisfacción estudiantes,Grado en Educación Primaria,Orientación,Online,Madrid,5.24,Amarillo,VAL_KPI-03_GRA,379.7
-KPI-03,Satisfacción estudiantes,Grado en Educación Primaria,Orientación,Online,Barcelona,3.91,Naranja,VAL_KPI-03_GRA,226.6
-KPI-03,Satisfacción estudiantes,Grado en Educación Primaria,Orientación,Online,Valencia,5.09,Rojo,VAL_KPI-03_GRA,342.5
-KPI-03,Satisfacción estudiantes,Grado en ADE,Orientación,Presencial,Madrid,6.38,Amarillo,VAL_KPI-03_GRA,36.8
-KPI-03,Satisfacción estudiantes,Grado en ADE,Orientación,Presencial,Barcelona,4.59,Amarillo,VAL_KPI-03_GRA,68.8
-KPI-03,Satisfacción estudiantes,Grado en ADE,Orientación,Presencial,Valencia,6.22,Amarillo,VAL_KPI-03_GRA,255.1
-KPI-03,Satisfacción estudiantes,Grado en ADE,Orientación,Online,Madrid,8.45,Verde,VAL_KPI-03_GRA,223.7
-KPI-03,Satisfacción estudiantes,Grado en ADE,Orientación,Online,Barcelona,6.33,Amarillo,VAL_KPI-03_GRA,357.7
-KPI-03,Satisfacción estudiantes,Grado en ADE,Orientación,Online,Valencia,5.27,Amarillo,VAL_KPI-03_GRA,474.3
-KPI-03,Satisfacción estudiantes,Máster en Psicología,Orientación,Presencial,Madrid,6.45,Amarillo,VAL_KPI-03_MÁS,129.2
-KPI-03,Satisfacción estudiantes,Máster en Psicología,Orientación,Presencial,Barcelona,7.5,Verde,VAL_KPI-03_MÁS,118.6
-KPI-03,Satisfacción estudiantes,Máster en Psicología,Orientación,Presencial,Valencia,7.63,Verde,VAL_KPI-03_MÁS,390.4
-KPI-03,Satisfacción estudiantes,Máster en Psicología,Orientación,Online,Madrid,5.73,Amarillo,VAL_KPI-03_MÁS,106.7
-KPI-03,Satisfacción estudiantes,Máster en Psicología,Orientación,Online,Barcelona,7.15,Verde,VAL_KPI-03_MÁS,252.1
-KPI-03,Satisfacción estudiantes,Máster en Psicología,Orientación,Online,Valencia,8.56,Verde,VAL_KPI-03_MÁS,325.1
-KPI-04,Empleabilidad,Grado en Educación Primaria,Inserción,Presencial,Madrid,9.42,Amarillo,VAL_KPI-04_GRA,319.4
-KPI-04,Empleabilidad,Grado en Educación Primaria,Inserción,Presencial,Barcelona,8.61,Verde,VAL_KPI-04_GRA,231.4
-KPI-04,Empleabilidad,Grado en Educación Primaria,Inserción,Presencial,Valencia,3.69,Amarillo,VAL_KPI-04_GRA,54.2
-KPI-04,Empleabilidad,Grado en Educación Primaria,Inserción,Online,Madrid,6.73,Amarillo,VAL_KPI-04_GRA,329.4
-KPI-04,Empleabilidad,Grado en Educación Primaria,Inserción,Online,Barcelona,4.92,Amarillo,VAL_KPI-04_GRA,407.4
-KPI-04,Empleabilidad,Grado en Educación Primaria,Inserción,Online,Valencia,8.53,Verde,VAL_KPI-04_GRA,131.4
-KPI-04,Empleabilidad,Grado en ADE,Inserción,Presencial,Madrid,5.88,Amarillo,VAL_KPI-04_GRA,199.8
-KPI-04,Empleabilidad,Grado en ADE,Inserción,Presencial,Barcelona,7.84,Verde,VAL_KPI-04_GRA,42.3
-KPI-04,Empleabilidad,Grado en ADE,Inserción,Presencial,Valencia,4.34,Amarillo,VAL_KPI-04_GRA,482.6
-KPI-04,Empleabilidad,Grado en ADE,Inserción,Online,Madrid,6.59,Amarillo,VAL_KPI-04_GRA,181.4
-KPI-04,Empleabilidad,Grado en ADE,Inserción,Online,Barcelona,9.53,Verde,VAL_KPI-04_GRA,51.5
-KPI-04,Empleabilidad,Máster en Psicología,Inserción,Presencial,Madrid,7.37,Amarillo,VAL_KPI-04_MÁS,416.2
-KPI-04,Empleabilidad,Máster en Psicología,Inserción,Presencial,Barcelona,7.69,Verde,VAL_KPI-04_MÁS,187.3
-KPI-04,Empleabilidad,Máster en Psicología,Inserción,Presencial,Valencia,5.29,Amarillo,VAL_KPI-04_MÁS,104.1
-KPI-04,Empleabilidad,Máster en Psicología,Inserción,Online,Madrid,9.74,Rojo,VAL_KPI-04_MÁS,419.2
-KPI-04,Empleabilidad,Máster en Psicología,Inserción,Online,Barcelona,8.98,Verde,VAL_KPI-04_MÁS,302.7
-KPI-04,Empleabilidad,Máster en Psicología,Inserción,Online,Valencia,3.85,Amarillo,VAL_KPI-04_MÁS,341.4
-KPI-05,Movilidad saliente,Grado en Educación Primaria,Internacionalización,Presencial,Madrid,5.3,Amarillo,VAL_KPI-05_GRA,124.7
-KPI-05,Movilidad saliente,Grado en Educación Primaria,Internacionalización,Presencial,Barcelona,5.7,Amarillo,VAL_KPI-05_GRA,342.4
-KPI-05,Movilidad saliente,Grado en Educación Primaria,Internacionalización,Presencial,Valencia,7.3,Amarillo,VAL_KPI-05_GRA,215.1
-KPI-05,Movilidad saliente,Grado en Educación Primaria,Internacionalización,Online,Madrid,3.83,Amarillo,VAL_KPI-05_GRA,438.3
-KPI-05,Movilidad saliente,Grado en Educación Primaria,Internacionalización,Online,Barcelona,6.42,Amarillo,VAL_KPI-05_GRA,143.7
-KPI-05,Movilidad saliente,Grado en Educación Primaria,Internacionalización,Online,Valencia,8.8,Verde,VAL_KPI-05_GRA,410.2
-KPI-05,Movilidad saliente,Grado en ADE,Internacionalización,Presencial,Madrid,9.13,Verde,VAL_KPI-05_GRA,125.5
-KPI-05,Movilidad saliente,Grado en ADE,Internacionalización,Presencial,Barcelona,9.2,Rojo,VAL_KPI-05_GRA,328.5
-KPI-05,Movilidad saliente,Grado en ADE,Internacionalización,Presencial,Valencia,8.51,Verde,VAL_KPI-05_GRA,417.2
-KPI-05,Movilidad saliente,Grado en ADE,Internacionalización,Online,Madrid,7.55,Verde,VAL_KPI-05_GRA,419.1
-KPI-05,Movilidad saliente,Grado en ADE,Internacionalización,Online,Barcelona,7.02,Amarillo,VAL_KPI-05_GRA,157.6
-KPI-05,Movilidad saliente,Grado en ADE,Internacionalización,Online,Valencia,3.81,Amarillo,VAL_KPI-05_GRA,254.9
-KPI-05,Movilidad saliente,Máster en Psicología,Internacionalización,Presencial,Madrid,6.41,Amarillo,VAL_KPI-05_MÁS,10.8
-KPI-05,Movilidad saliente,Máster en Psicología,Internacionalización,Presencial,Barcelona,5.3,Amarillo,VAL_KPI-05_MÁS,43.2
-KPI-05,Movilidad saliente,Máster en Psicología,Internacionalización,Presencial,Valencia,6.43,Amarillo,VAL_KPI-05_MÁS,321.5
-KPI-05,Movilidad saliente,Máster en Psicología,Internacionalización,Online,Madrid,9.03,Verde,VAL_KPI-05_MÁS,369.1
-KPI-05,Movilidad saliente,Máster en Psicología,Internacionalización,Online,Barcelona,7.53,Verde,VAL_KPI-05_MÁS,175.9
-KPI-05,Movilidad saliente,Máster en Psicología,Internacionalización,Online,Valencia,8.08,Verde,VAL_KPI-05_MÁS,99.3
-KPI-06,Ratio PDI/estudiante,Grado en Educación Primaria,Recursos,Presencial,Madrid,4.49,Amarillo,VAL_KPI-06_GRA,397.6
-KPI-06,Ratio PDI/estudiante,Grado en Educación Primaria,Recursos,Presencial,Barcelona,8.99,Verde,VAL_KPI-06_GRA,276.1
-KPI-06,Ratio PDI/estudiante,Grado en Educación Primaria,Recursos,Presencial,Valencia,4.99,Amarillo,VAL_KPI-06_GRA,33.4
-KPI-06,Ratio PDI/estudiante,Grado en Educación Primaria,Recursos,Online,Madrid,7.54,Verde,VAL_KPI-06_GRA,225.5
-KPI-06,Ratio PDI/estudiante,Grado en Educación Primaria,Recursos,Online,Barcelona,8.86,Verde,VAL_KPI-06_GRA,462.9
-KPI-06,Ratio PDI/estudiante,Grado en Educación Primaria,Recursos,Online,Valencia,6.87,Amarillo,VAL_KPI-06_GRA,412.9
-KPI-06,Ratio PDI/estudiante,Grado en ADE,Recursos,Presencial,Madrid,6.46,Amarillo,VAL_KPI-06_GRA,228.5
-KPI-06,Ratio PDI/estudiante,Grado en ADE,Recursos,Presencial,Barcelona,7.82,Amarillo,VAL_KPI-06_GRA,311.3
-KPI-06,Ratio PDI/estudiante,Grado en ADE,Recursos,Presencial,Valencia,6.12,Amarillo,VAL_KPI-06_GRA,188.0
-KPI-06,Ratio PDI/estudiante,Grado en ADE,Recursos,Online,Madrid,8.32,Verde,VAL_KPI-06_GRA,392.8
-KPI-06,Ratio PDI/estudiante,Grado en ADE,Recursos,Online,Barcelona,3.66,Amarillo,VAL_KPI-06_GRA,25.9
-KPI-06,Ratio PDI/estudiante,Grado en ADE,Recursos,Online,Valencia,4.61,Amarillo,VAL_KPI-06_GRA,291.2
-KPI-06,Ratio PDI/estudiante,Máster en Psicología,Recursos,Presencial,Madrid,6.78,Rojo,VAL_KPI-06_MÁS,101.2
-KPI-06,Ratio PDI/estudiante,Máster en Psicología,Recursos,Presencial,Barcelona,6.7,Amarillo,VAL_KPI-06_MÁS,228.7
-KPI-06,Ratio PDI/estudiante,Máster en Psicología,Recursos,Presencial,Valencia,9.48,Verde,VAL_KPI-06_MÁS,46.3
-KPI-06,Ratio PDI/estudiante,Máster en Psicología,Recursos,Online,Madrid,4.24,Amarillo,VAL_KPI-06_MÁS,493.4
-KPI-06,Ratio PDI/estudiante,Máster en Psicología,Recursos,Online,Barcelona,8.11,Verde,VAL_KPI-06_MÁS,358.8
-KPI-06,Ratio PDI/estudiante,Máster en Psicología,Recursos,Online,Valencia,9.42,Verde,VAL_KPI-06_MÁS,108.5
-KPI-07,Satisfacción egresados,Grado en Educación Primaria,Orientación,Presencial,Madrid,4.29,Amarillo,VAL_KPI-07_GRA,239.0
-KPI-07,Satisfacción egresados,Grado en Educación Primaria,Orientación,Presencial,Barcelona,9.11,Verde,VAL_KPI-07_GRA,361.3
-KPI-07,Satisfacción egresados,Grado en Educación Primaria,Orientación,Presencial,Valencia,6.76,Amarillo,VAL_KPI-07_GRA,324.7
-KPI-07,Satisfacción egresados,Grado en Educación Primaria,Orientación,Online,Madrid,6.41,Amarillo,VAL_KPI-07_GRA,280.1
-KPI-07,Satisfacción egresados,Grado en Educación Primaria,Orientación,Online,Barcelona,6.94,Verde,VAL_KPI-07_GRA,37.2
-KPI-07,Satisfacción egresados,Grado en Educación Primaria,Orientación,Online,Valencia,3.92,Amarillo,VAL_KPI-07_GRA,120.5
-KPI-07,Satisfacción egresados,Grado en ADE,Orientación,Presencial,Madrid,9.64,Verde,VAL_KPI-07_GRA,321.2
-KPI-07,Satisfacción egresados,Grado en ADE,Orientación,Presencial,Barcelona,6.93,Rojo,VAL_KPI-07_GRA,92.6
-KPI-07,Satisfacción egresados,Grado en ADE,Orientación,Presencial,Valencia,9.39,Verde,VAL_KPI-07_GRA,414.4
-KPI-07,Satisfacción egresados,Grado en ADE,Orientación,Online,Madrid,3.75,Amarillo,VAL_KPI-07_GRA,214.1
-KPI-07,Satisfacción egresados,Grado en ADE,Orientación,Online,Barcelona,7.68,Verde,VAL_KPI-07_GRA,130.0
-KPI-07,Satisfacción egresados,Grado en ADE,Orientación,Online,Valencia,8.35,Amarillo,VAL_KPI-07_GRA,213.7
-KPI-07,Satisfacción egresados,Máster en Psicología,Orientación,Presencial,Madrid,6.0,Amarillo,VAL_KPI-07_MÁS,369.8
-KPI-07,Satisfacción egresados,Máster en Psicología,Orientación,Presencial,Valencia,8.54,Verde,VAL_KPI-07_MÁS,62.0
-KPI-07,Satisfacción egresados,Máster en Psicología,Orientación,Online,Madrid,4.88,Amarillo,VAL_KPI-07_MÁS,473.2
-KPI-07,Satisfacción egresados,Máster en Psicología,Orientación,Online,Barcelona,8.2,Verde,VAL_KPI-07_MÁS,363.4
-KPI-07,Satisfacción egresados,Máster en Psicología,Orientación,Online,Valencia,4.72,Amarillo,VAL_KPI-07_MÁS,21.4
-KPI-08,Prácticas externas,Grado en Educación Primaria,Inserción,Presencial,Madrid,9.03,Verde,VAL_KPI-08_GRA,34.8
-KPI-08,Prácticas externas,Grado en Educación Primaria,Inserción,Presencial,Barcelona,6.88,Verde,VAL_KPI-08_GRA,221.2
-KPI-08,Prácticas externas,Grado en Educación Primaria,Inserción,Presencial,Valencia,9.14,Verde,VAL_KPI-08_GRA,289.4
-KPI-08,Prácticas externas,Grado en Educación Primaria,Inserción,Online,Madrid,4.48,Naranja,VAL_KPI-08_GRA,279.4
-KPI-08,Prácticas externas,Grado en Educación Primaria,Inserción,Online,Barcelona,8.42,Amarillo,VAL_KPI-08_GRA,399.5
-KPI-08,Prácticas externas,Grado en Educación Primaria,Inserción,Online,Valencia,5.66,Amarillo,VAL_KPI-08_GRA,255.0
-KPI-08,Prácticas externas,Grado en ADE,Inserción,Presencial,Madrid,3.98,Naranja,VAL_KPI-08_GRA,83.0
-KPI-08,Prácticas externas,Grado en ADE,Inserción,Presencial,Barcelona,8.75,Verde,VAL_KPI-08_GRA,372.3
-KPI-08,Prácticas externas,Grado en ADE,Inserción,Presencial,Valencia,5.58,Amarillo,VAL_KPI-08_GRA,409.7
-KPI-08,Prácticas externas,Grado en ADE,Inserción,Online,Madrid,6.13,Amarillo,VAL_KPI-08_GRA,365.4
-KPI-08,Prácticas externas,Grado en ADE,Inserción,Online,Barcelona,7.52,Verde,VAL_KPI-08_GRA,486.3
-KPI-08,Prácticas externas,Grado en ADE,Inserción,Online,Valencia,6.49,Amarillo,VAL_KPI-08_GRA,318.2
-KPI-08,Prácticas externas,Máster en Psicología,Inserción,Presencial,Madrid,6.98,Verde,VAL_KPI-08_MÁS,290.6
-KPI-08,Prácticas externas,Máster en Psicología,Inserción,Presencial,Barcelona,7.7,Verde,VAL_KPI-08_MÁS,348.3
-KPI-08,Prácticas externas,Máster en Psicología,Inserción,Presencial,Valencia,6.58,Amarillo,VAL_KPI-08_MÁS,40.5
-KPI-08,Prácticas externas,Máster en Psicología,Inserción,Online,Madrid,4.67,Naranja,VAL_KPI-08_MÁS,194.6
-KPI-08,Prácticas externas,Máster en Psicología,Inserción,Online,Barcelona,9.52,Verde,VAL_KPI-08_MÁS,435.2
-KPI-08,Prácticas externas,Máster en Psicología,Inserción,Online,Valencia,8.09,Verde,VAL_KPI-08_MÁS,130.8
-KPI-09,Publicaciones científicas,Grado en Educación Primaria,Investigación,Presencial,Madrid,7.09,Amarillo,VAL_KPI-09_GRA,348.2
-KPI-09,Publicaciones científicas,Grado en Educación Primaria,Investigación,Presencial,Barcelona,6.6,Amarillo,VAL_KPI-09_GRA,276.2
-KPI-09,Publicaciones científicas,Grado en Educación Primaria,Investigación,Presencial,Valencia,9.31,Verde,VAL_KPI-09_GRA,152.3
-KPI-09,Publicaciones científicas,Grado en Educación Primaria,Investigación,Online,Madrid,5.85,Amarillo,VAL_KPI-09_GRA,376.2
-KPI-09,Publicaciones científicas,Grado en Educación Primaria,Investigación,Online,Barcelona,5.47,Amarillo,VAL_KPI-09_GRA,77.3
-KPI-09,Publicaciones científicas,Grado en Educación Primaria,Investigación,Online,Valencia,7.18,Verde,VAL_KPI-09_GRA,120.6
-KPI-09,Publicaciones científicas,Grado en ADE,Investigación,Presencial,Madrid,5.05,Verde,VAL_KPI-09_GRA,12.5
-KPI-09,Publicaciones científicas,Grado en ADE,Investigación,Presencial,Barcelona,7.41,Verde,VAL_KPI-09_GRA,243.1
-KPI-09,Publicaciones científicas,Grado en ADE,Investigación,Presencial,Valencia,7.74,Verde,VAL_KPI-09_GRA,454.9
-KPI-09,Publicaciones científicas,Grado en ADE,Investigación,Online,Madrid,3.6,Amarillo,VAL_KPI-09_GRA,442.3
-KPI-09,Publicaciones científicas,Grado en ADE,Investigación,Online,Barcelona,5.22,Amarillo,VAL_KPI-09_GRA,377.0
-KPI-09,Publicaciones científicas,Grado en ADE,Investigación,Online,Valencia,8.56,Verde,VAL_KPI-09_GRA,62.6
-KPI-09,Publicaciones científicas,Máster en Psicología,Investigación,Presencial,Madrid,9.74,Verde,VAL_KPI-09_MÁS,257.1
-KPI-09,Publicaciones científicas,Máster en Psicología,Investigación,Presencial,Barcelona,5.44,Amarillo,VAL_KPI-09_MÁS,136.1
-KPI-09,Publicaciones científicas,Máster en Psicología,Investigación,Presencial,Valencia,5.07,Amarillo,VAL_KPI-09_MÁS,96.0
-KPI-09,Publicaciones científicas,Máster en Psicología,Investigación,Online,Madrid,9.17,Rojo,VAL_KPI-09_MÁS,56.7
-KPI-09,Publicaciones científicas,Máster en Psicología,Investigación,Online,Barcelona,9.34,Verde,VAL_KPI-09_MÁS,228.9
-KPI-09,Publicaciones científicas,Máster en Psicología,Investigación,Online,Valencia,4.84,Amarillo,VAL_KPI-09_MÁS,125.8
-KPI-10,Acciones de mejora,Grado en Educación Primaria,Mejora continua,Presencial,Madrid,7.26,Verde,VAL_KPI-10_GRA,448.6
-KPI-10,Acciones de mejora,Grado en Educación Primaria,Mejora continua,Presencial,Barcelona,7.26,Verde,VAL_KPI-10_GRA,190.1
-KPI-10,Acciones de mejora,Grado en Educación Primaria,Mejora continua,Presencial,Valencia,5.21,Amarillo,VAL_KPI-10_GRA,306.8
-KPI-10,Acciones de mejora,Grado en Educación Primaria,Mejora continua,Online,Madrid,6.44,Amarillo,VAL_KPI-10_GRA,414.5
-KPI-10,Acciones de mejora,Grado en Educación Primaria,Mejora continua,Online,Barcelona,7.89,Verde,VAL_KPI-10_GRA,187.3
-KPI-10,Acciones de mejora,Grado en Educación Primaria,Mejora continua,Online,Valencia,8.45,Verde,VAL_KPI-10_GRA,170.8
-KPI-10,Acciones de mejora,Grado en ADE,Mejora continua,Presencial,Madrid,6.0,Amarillo,VAL_KPI-10_GRA,450.5
-KPI-10,Acciones de mejora,Grado en ADE,Mejora continua,Presencial,Barcelona,5.61,Amarillo,VAL_KPI-10_GRA,38.3
-KPI-10,Acciones de mejora,Grado en ADE,Mejora continua,Presencial,Valencia,6.22,Amarillo,VAL_KPI-10_GRA,375.4
-KPI-10,Acciones de mejora,Grado en ADE,Mejora continua,Online,Madrid,7.08,Amarillo,VAL_KPI-10_GRA,39.5
-KPI-10,Acciones de mejora,Grado en ADE,Mejora continua,Online,Barcelona,9.21,Verde,VAL_KPI-10_GRA,386.8
-KPI-10,Acciones de mejora,Grado en ADE,Mejora continua,Online,Valencia,8.6,Verde,VAL_KPI-10_GRA,229.8
-KPI-10,Acciones de mejora,Máster en Psicología,Mejora continua,Presencial,Madrid,8.56,Verde,VAL_KPI-10_MÁS,274.3
-KPI-10,Acciones de mejora,Máster en Psicología,Mejora continua,Presencial,Barcelona,6.81,Verde,VAL_KPI-10_MÁS,72.4
-KPI-10,Acciones de mejora,Máster en Psicología,Mejora continua,Presencial,Valencia,9.06,Verde,VAL_KPI-10_MÁS,362.4
-KPI-10,Acciones de mejora,Máster en Psicología,Mejora continua,Online,Madrid,5.81,Amarillo,VAL_KPI-10_MÁS,145.1
-KPI-10,Acciones de mejora,Máster en Psicología,Mejora continua,Online,Barcelona,9.21,Verde,VAL_KPI-10_MÁS,311.3
-KPI-10,Acciones de mejora,Máster en Psicología,Mejora continua,Online,Valencia,9.21,Verde,VAL_KPI-10_MÁS,228.8
-KPI-10,Acciones de mejora,Grado en ADE,Mejora continua,Online,Valencia,6.91,Amarillo,VAL_KPI-10_GRA,129.9
+﻿id,curso_academico,uax_fp,area,unidad_de_servicio,tipo_de_formacion,facultad_centro,codigo_de_titulo,titulo,modalidad,vision,ambito_geografico,campus,idioma,turno,curso,espacio_formativo,cap_max_alumnos_grupo,equipamiento,modulo_profesional,especialidad,cuerpo,ambito_cumplimiento,ambito_analisis,subambito_analisis,codigo_kpi,nombre_kpi,normativa_referencia,articulo_normativa,estandar_requerimiento,origen_estandar,codigo_estandar,valor_estandar,origen_dato_real,dato_real,cumplimiento,visualizacion_calculo,priorizacion,observaciones,semaforo,origen_respuesta,fichero_origen,hoja_origen,dato_real_original,cumplimiento_original,clave_hash,run_id,fecha_carga,fecha_actualizacion
+059dbc77,2023-24,UAX,Calidad,,Grado,Facultad de Ciencias Sociales,T001,Grado en ADE,Presencial,,Nacional,Madrid,Español,Mañana,,,30,,,,,Académico,Resultados,,OYD0001,Tasa de abandono,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 66.2%.,Interno,EST-OYD0001,66.2,DPI,52.0,NO,Cálculo interno,Alta,,Rojo,Cuestionario,cuestionario_2024.xlsx,Hoja1,52.0,No,fa98238e-6807-44,RUN-2024-001,2024-09-01,2024-09-15
+28cce6af,2023-24,UAX,Calidad,,Grado,Facultad de Derecho,T002,Grado en Derecho,Presencial,,Nacional,Barcelona,Español,Mañana,,,30,,,,,Académico,Resultados,,OYD0001,Tasa de abandono,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 60.0%.,Interno,EST-OYD0001,60.0,DPI,63.0,SI,Cálculo interno,Media,,Verde,Cuestionario,cuestionario_2024.xlsx,Hoja1,63.0,Sí,d8f5e660-3eda-4c,RUN-2024-001,2024-09-01,2024-09-15
+54a1bea5,2023-24,UAX,Calidad,,Máster,Facultad de Ciencias Sociales,T003,Máster en Dirección,Online,,Nacional,Madrid,Español,Mañana,,,30,,,,,Académico,Resultados,,OYD0001,Tasa de abandono,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 81.7%.,Interno,EST-OYD0001,81.7,DPI,87.3,SI,Cálculo interno,Media,,Verde,Cuestionario,cuestionario_2024.xlsx,Hoja1,87.3,Sí,6e55b4a1-0415-46,RUN-2024-001,2024-09-01,2024-09-15
+c4303456,2023-24,UAX,Calidad,,Grado,Facultad de Ciencias Sociales,T001,Grado en ADE,Presencial,,Nacional,Barcelona,Español,Mañana,,,30,,,,,Académico,Resultados,,OYD0002,Tasa de graduación,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 84.0%.,Interno,EST-OYD0002,84.0,DPI,60.3,NO,Visualización,Media,,Rojo,Cuestionario,cuestionario_2024.xlsx,Hoja1,60.3,No,da092866-939d-4f,RUN-2024-001,2024-09-01,2024-09-15
+2cc52c2f,2023-24,UAX,Calidad,,Grado,Facultad de Derecho,T002,Grado en Derecho,Presencial,,Nacional,Barcelona,Español,Mañana,,,30,,,,,Académico,Resultados,,OYD0002,Tasa de graduación,Ley 2/2023,Art. 4,El indicador debe alcanzar al menos el 60.8%.,Interno,EST-OYD0002,60.8,DPI,40.5,NO,,Alta,,Rojo,Cuestionario,cuestionario_2024.xlsx,Hoja1,40.5,No,7c9a84bc-9f1c-4e,RUN-2024-001,2024-09-01,2024-09-15
+9153a384,2023-24,UAX,Calidad,,Máster,Facultad de Ciencias Sociales,T003,Máster en Dirección,Online,,Nacional,Madrid,Español,Mañana,,,30,,,,,Académico,Resultados,,OYD0002,Tasa de graduación,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 70.7%.,Interno,EST-OYD0002,70.7,DPI,51.9,NO,Visualización,Alta,,Rojo,Cuestionario,cuestionario_2024.xlsx,Hoja1,51.9,No,fe5546b7-5ad6-44,RUN-2024-001,2024-09-01,2024-09-15
+035eacd9,2023-24,UAX,Calidad,,Grado,Facultad de Ciencias Sociales,T001,Grado en ADE,Online,,Nacional,Madrid,Español,Mañana,,,30,,,,,Académico,Resultados,,OYD0020,Satisfacción global,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 88.1%.,Interno,EST-OYD0020,88.1,DPI,82.9,NO,,Baja,,Rojo,Cuestionario,cuestionario_2024.xlsx,Hoja1,82.9,No,18f0a149-4757-4f,RUN-2024-001,2024-09-01,2024-09-15
+6c9d64d6,2023-24,UAX,Calidad,,Grado,Facultad de Derecho,T002,Grado en Derecho,Online,,Nacional,Barcelona,Español,Mañana,,,30,,,,,Académico,Resultados,,OYD0020,Satisfacción global,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 51.5%.,Interno,EST-OYD0020,51.5,DPI,41.4,NO,Cálculo interno,Media,,Rojo,Cuestionario,cuestionario_2024.xlsx,Hoja1,41.4,No,3235fac3-9f19-44,RUN-2024-001,2024-09-01,2024-09-15
+6a1e79a3,2023-24,UAX,Calidad,,Máster,Facultad de Ciencias Sociales,T003,Máster en Dirección,Online,,Nacional,Barcelona,Español,Mañana,,,30,,,,,Académico,Resultados,,OYD0020,Satisfacción global,Ley 2/2023,Art. 4,El indicador debe alcanzar al menos el 55.7%.,Interno,EST-OYD0020,55.7,DPI,77.0,SI,Cálculo interno,Baja,,Verde,Cuestionario,cuestionario_2024.xlsx,Hoja1,77.0,Sí,2467e446-c761-45,RUN-2024-001,2024-09-01,2024-09-15
+ee6417bf,2023-24,UAX,Calidad,,Grado,Facultad de Ciencias Sociales,T001,Grado en ADE,Presencial,,Nacional,Madrid,Español,Mañana,,,30,,,,,Académico,Resultados,,GEN0001,Empleabilidad,Ley 2/2023,Art. 4,El indicador debe alcanzar al menos el 58.0%.,Interno,EST-GEN0001,58.0,DPI,87.2,SI,Visualización,Media,,Verde,Cuestionario,cuestionario_2024.xlsx,Hoja1,87.2,Sí,cbad7365-5d37-4a,RUN-2024-001,2024-09-01,2024-09-15
+61904cfa,2023-24,UAX,Calidad,,Grado,Facultad de Derecho,T002,Grado en Derecho,Online,,Nacional,Madrid,Español,Mañana,,,30,,,,,Académico,Resultados,,GEN0001,Empleabilidad,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 83.0%.,Interno,EST-GEN0001,83.0,DPI,47.6,NO,Cálculo interno,Baja,,Rojo,Cuestionario,cuestionario_2024.xlsx,Hoja1,47.6,No,2e6de367-0852-4d,RUN-2024-001,2024-09-01,2024-09-15
+0870185e,2023-24,UAX,Calidad,,Máster,Facultad de Ciencias Sociales,T003,Máster en Dirección,Presencial,,Nacional,Madrid,Español,Mañana,,,30,,,,,Académico,Resultados,,GEN0001,Empleabilidad,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 74.3%.,Interno,EST-GEN0001,74.3,DPI,64.5,NO,Cálculo interno,Media,,Rojo,Cuestionario,cuestionario_2024.xlsx,Hoja1,64.5,No,ac0a14c4-57eb-44,RUN-2024-001,2024-09-01,2024-09-15
+f464cb4b,2023-24,UAX,Calidad,,Grado,Facultad de Ciencias Sociales,T001,Grado en ADE,Presencial,,Nacional,Barcelona,Español,Mañana,,,30,,,,,Académico,Resultados,,GEN0002,Movilidad Erasmus+,Ley 2/2023,Art. 4,El indicador debe alcanzar al menos el 101.6%.,Interno,EST-GEN0002,101.6,DPI,64.6,NO,Visualización,Alta,,Rojo,Cuestionario,cuestionario_2024.xlsx,Hoja1,64.6,No,04c83484-01cb-4a,RUN-2024-001,2024-09-01,2024-09-15
+a8d53a49,2023-24,UAX,Calidad,,Grado,Facultad de Derecho,T002,Grado en Derecho,Presencial,,Nacional,Madrid,Español,Mañana,,,30,,,,,Académico,Resultados,,GEN0002,Movilidad Erasmus+,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 54.7%.,Interno,EST-GEN0002,54.7,DPI,107.3,SI,,Media,,Verde,Cuestionario,cuestionario_2024.xlsx,Hoja1,89.3,Sí,77bd2aa9-8716-49,RUN-2024-001,2024-09-01,2024-09-15
+47006a74,2023-24,UAX,Calidad,,Máster,Facultad de Ciencias Sociales,T003,Máster en Dirección,Presencial,,Nacional,Barcelona,Español,Mañana,,,30,,,,,Académico,Resultados,,GEN0002,Movilidad Erasmus+,Ley 2/2023,Art. 4,El indicador debe alcanzar al menos el 73.4%.,Interno,EST-GEN0002,73.4,DPI,42.9,SI,Visualización,Media,,Verde,Cuestionario,cuestionario_2024.xlsx,Hoja1,42.9,No,dabc49b8-6cb1-47,RUN-2024-001,2024-09-01,2024-09-15
+b7aca705,2023-24,UAX,Calidad,,Grado,Facultad de Derecho,T002,Grado en Derecho,Presencial,,Nacional,Barcelona,Español,Mañana,,,30,,,,,Académico,Resultados,,INV0001,Publicaciones JCR,Ley 2/2023,Art. 4,El indicador debe alcanzar al menos el 80.8%.,Interno,EST-INV0001,80.8,DPI,53.8,NO,Cálculo interno,Baja,,Rojo,Cuestionario,cuestionario_2024.xlsx,Hoja1,53.8,No,62ecbf2d-aa23-4b,RUN-2024-001,2024-09-01,2024-09-15
+1f93bf67,2023-24,UAX,Calidad,,Máster,Facultad de Ciencias Sociales,T003,Máster en Dirección,Presencial,,Nacional,Barcelona,Español,Mañana,,,30,,,,,Académico,Resultados,,INV0001,Publicaciones JCR,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 58.7%.,Interno,EST-INV0001,58.7,DPI,88.6,SI,Visualización,Media,,Verde,Cuestionario,cuestionario_2024.xlsx,Hoja1,88.6,Sí,e35461bd-2145-4e,RUN-2024-001,2024-09-01,2024-09-15
+fc06c483,2023-24,UAX,Calidad,,Máster,Facultad de Ciencias Sociales,T003,Máster en Dirección,Presencial,,Nacional,Barcelona,Español,Mañana,,,30,,,,,Académico,Resultados,,INV0001,Publicaciones JCR,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 58.7%.,Interno,EST-INV0001,58.7,DPI,88.6,SI,Visualización,Media,,Verde,Cuestionario,cuestionario_2024.xlsx,Hoja1,88.6,Sí,469735b6-d1c7-48,RUN-2024-001,2024-09-01,2024-09-15
+bfe61543,2023-24,UAX,Calidad,,Grado,Facultad de Salud,T004,Grado en Enfermería,Presencial,,Nacional,Madrid,Español,Mañana,,,30,,,,,Académico,Resultados,,OYD0001,Tasa de abandono,RD 822/2021,Art. 4,El indicador debe alcanzar al menos el 70.0%.,Interno,EST-OYD0001,70.0,DPI,75,SI,Cálculo interno,Alta,,Verde,Cuestionario,cuestionario_2024.xlsx,Hoja1,75.0,Sí,c35cd857-6216-41,RUN-2024-001,2024-09-01,2024-09-15
