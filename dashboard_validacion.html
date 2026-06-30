@@ -395,6 +395,27 @@ function normNum(v){
   return isNaN(n)?null:n;
 }
 
+// Semáforo: convierte valor numérico en categoría de color
+// 0–2.3 → rojo | 2.4–3.9 → amarillo | 4–5 → verde
+function semaforoCategoria(v){
+  const n=normNum(String(v).replace(',','.'));
+  if(n===null||isNaN(n)) return null;
+  if(n<=2.3) return 'rojo';
+  if(n<=3.9) return 'amarillo';
+  return 'verde';
+}
+const SEM_LABEL={'rojo':'🔴 Rojo','amarillo':'🟡 Amarillo','verde':'🟢 Verde'};
+const SEM_COLOR={'rojo':'#fde8e8','amarillo':'#fff8e1','verde':'#edfbf1'};
+const SEM_TEXT ={'rojo':'#a01010','amarillo':'#7a5500','verde':'#1a7a3a'};
+
+// Comparar semáforo por categoría (no por valor exacto)
+function cmpSemaforo(a,b){
+  const ca=semaforoCategoria(a), cb=semaforoCategoria(b);
+  if(!ca&&!cb) return 'ok';
+  if(!ca||!cb) return 'ok'; // si uno no existe, no contar como diferencia
+  return ca===cb?'ok':'diferente';
+}
+
 // Comparar dos valores → 'ok' | 'diferente'
 // Normaliza antes de comparar: tildes, espacios, mayúsculas, Sí/SI, 75.0/75, N/A/vacío
 function cmpVal(a,b){
@@ -629,6 +650,7 @@ function makeComp(ro,rn,idxAnt,idxNue,forzar){
     if(!ro)          estado='solo_nue';
     else if(!rn)     estado='solo_orig';
     else if(!m.nue)  estado='excluido';
+    else if(m.campo==='Semáforo') estado=cmpSemaforo(vo,vn);
     else             estado=cmpVal(vo,vn);
     campos[m.campo]={orig:vo,nue:vn,estado,tipo:m.tipo};
   });
@@ -844,10 +866,20 @@ function renderDetalle(cod){
       const cf=r.campos[m.campo];
       const esFun=m.tipo==='funcional';
       if(!cf||cf.estado==='excluido') return `<td class="cel-na">—</td>`;
+
+      // Celda especial para Semáforo: muestra pastilla de color por tramo
+      if(m.campo==='Semáforo'){
+        const cat=semaforoCategoria(cf.nue||cf.orig);
+        const lbl=cat?SEM_LABEL[cat]:'—';
+        const bg=cat?SEM_COLOR[cat]:'#f4f4f4';
+        const tc=cat?SEM_TEXT[cat]:'#888';
+        return `<td style="background:${bg};font-weight:700;color:${tc};font-size:.72rem;white-space:nowrap">${lbl}</td>`;
+      }
+
       if(cf.estado==='ok'){
         return `<td class="${esFun?'cel-ok':''}" title="Original: ${cf.orig}&#10;Nueva: ${cf.nue}">
           <span style="color:#1a7a3a;font-size:.72rem">✅</span>
-          <span style="font-size:.72rem">${trunca(cf.orig||'(vacío)',20)}</span></td>`;
+          <span style="font-size:.72rem"> ${trunca(cf.orig||'(vacío)',20)}</span></td>`;
       }
       if(cf.estado==='diferente'){
         return `<td class="cel-dif">
@@ -886,6 +918,12 @@ function renderRowDetail(r){
     const cf=r.campos[m.campo]; if(!cf) return '';
     const est=cf.estado;
     let icono='', origTxt=cf.orig||'(vacío)', nueTxt=cf.nue||'(vacío)';
+    // Semáforo: mostrar categoría de color en vez del valor numérico
+    if(m.campo==='Semáforo'){
+      const cat=semaforoCategoria(cf.nue||cf.orig);
+      origTxt=cf.orig?`${cf.orig} ${semaforoCategoria(cf.orig)?'('+SEM_LABEL[semaforoCategoria(cf.orig)]+')':''}`:origTxt;
+      nueTxt =cf.nue ?`${cf.nue} ${cat?'→ '+SEM_LABEL[cat]:''}`:nueTxt;
+    }
     if(est==='ok')        icono='✅';
     else if(est==='diferente') icono='❌';
     else if(est==='solo_orig') { icono='—'; nueTxt='(no existe)'; }
