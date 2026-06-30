@@ -378,8 +378,25 @@ function cmpVal(a,b){
 }
 
 // ════════════════════════════════════════════════════════
-// LECTURA DE FICHEROS
+// LECTURA DE FICHEROS — auto-detección de fila de cabecera
+// Escanea las primeras 15 filas y elige la que más columnas
+// conocidas del MAPEO contiene (resuelve el caso en que los
+// encabezados no están en la fila 1 sino en la 4, 5, etc.)
 // ════════════════════════════════════════════════════════
+const MAPEO_NORM_SET = new Set(
+  MAPEO.flatMap(m=>[m.orig,m.nue]).filter(Boolean).map(normCol)
+);
+
+function detectHeaderRow(ws){
+  const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
+  let best=0, bestScore=-1;
+  for(let i=0;i<Math.min(15,raw.length);i++){
+    const score=raw[i].filter(c=>MAPEO_NORM_SET.has(normCol(String(c||'')))).length;
+    if(score>bestScore){bestScore=score;best=i;}
+  }
+  return best; // índice 0-based de la fila que tiene los encabezados
+}
+
 function readFile(input,lblId,key){
   input.addEventListener('change',function(){
     const file=this.files[0];if(!file)return;
@@ -388,7 +405,14 @@ function readFile(input,lblId,key){
     const reader=new FileReader();
     reader.onload=e=>{
       const wb=XLSX.read(e.target.result,{type:'binary',raw:false});
-      G[key]=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:'',raw:false});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const hRow=detectHeaderRow(ws);
+      G[key]=XLSX.utils.sheet_to_json(ws,{range:hRow,defval:'',raw:false});
+      if(hRow>0){
+        const lbl=document.getElementById(lblId);
+        lbl.title=`Encabezados detectados en fila ${hRow+1}`;
+        lbl.textContent=file.name+` (cabecera: fila ${hRow+1})`;
+      }
     };
     reader.readAsBinaryString(file);
     setTimeout(()=>{document.getElementById('btn-analizar').disabled=!(G.ant.length&&G.nue.length);},350);
