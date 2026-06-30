@@ -286,7 +286,7 @@ const MAPEO = [
   {campo:'Cumplimiento',         orig:'Cumplimiento',                   nue:'cumplimiento',           tipo:'funcional'},
   {campo:'Visualiz./Cálculo',    orig:'VISUALIZACIÓN O CÁLCULO INTERNO',nue:'visualizacion_calculo',  tipo:'funcional'},
   {campo:'Priorización',         orig:'Priorización',                   nue:'priorizacion',           tipo:'funcional'},
-  {campo:'Semáforo',             orig:null,                             nue:'semaforo',               tipo:'funcional'},
+  {campo:'Semáforo',             orig:null,                             nue:'semaforo',               tipo:'comparar'},
   // ── Más campos a comparar ──
   {campo:'Ámbito cumplimiento',  orig:'Ámbito de cumplimiento',         nue:'ambito_cumplimiento',    tipo:'comparar'},
   {campo:'Ámbito de análisis',   orig:'Ámbito de análisis',             nue:'ambito_analisis',        tipo:'comparar'},
@@ -299,8 +299,8 @@ const MAPEO = [
   {campo:'Código estándar',      orig:'Código estándar',                nue:'codigo_estandar',        tipo:'comparar'},
   {campo:'Origen dato real',     orig:'Origen dato real',               nue:'origen_dato_real',       tipo:'comparar'},
   // ── Dimensiones (informativas, no usadas en clave principal) ──
-  // IMPORTANTE: Online/Presencial (orig) → modalidad (nue)
-  {campo:'Modalidad',            orig:'Online/Presencial',              nue:'modalidad',              tipo:'dimension'},
+  {campo:'Modalidad',            orig:'Modalidad',                      nue:'modalidad',              tipo:'dimension'},
+  {campo:'Online/Presencial',    orig:'Online/Presencial',              nue:null,                     tipo:'excluido'},
   {campo:'Curso académico',      orig:'Curso Académico',                nue:'curso_academico',        tipo:'dimension'},
   {campo:'Área',                 orig:'Área',                          nue:'area',                   tipo:'dimension'},
   {campo:'UAX/FP',               orig:'UAX/FP',                        nue:'uax_fp',                 tipo:'dimension'},
