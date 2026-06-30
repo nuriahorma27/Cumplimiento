@@ -560,6 +560,15 @@ function buildKey(row,idx,isNue){
   // Código de título: solo añadir si no está vacío
   const codTit=CLAVE_APOYO.map(m=>get(m))[0]||'';
   if(codTit) parts.push(codTit);
+  // Dimensiones diferenciadores: se incluyen solo si tienen valor,
+  // para distinguir registros del mismo KPI+título en diferente grado/modalidad/campus/etc.
+  const DIMS_CLAVE=[
+    'Modalidad','Campus','Idioma','Turno','Curso',
+    'Espacio formativo','Módulo profesional','Especialidad','Cuerpo','UAX/FP'
+  ];
+  CAMPOS_DIM.filter(m=>DIMS_CLAVE.includes(m.campo)&&(isNue?m.nue:m.orig)).forEach(m=>{
+    const v=get(m); if(v) parts.push(v);
+  });
   return parts.filter(Boolean).join('‖');
 }
 
