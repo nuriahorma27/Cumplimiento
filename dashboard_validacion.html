@@ -387,16 +387,15 @@ function normNum(v){
   return isNaN(n)?null:n;
 }
 
-// Comparar dos valores → 'ok' | 'formato' | 'funcional'
+// Comparar dos valores → 'ok' | 'diferente'
+// Normaliza antes de comparar: tildes, espacios, mayúsculas, Sí/SI, 75.0/75, N/A/vacío
 function cmpVal(a,b){
-  const sa=String(a==null?'':a).trim();
-  const sb=String(b==null?'':b).trim();
-  const na=normT(sa), nb=normT(sb);
-  if(na===nb) return (sa===sb)?'ok':'formato';
-  // Comparación numérica (75.0 vs 75)
-  const fa=normNum(sa), fb=normNum(sb);
-  if(fa!==null&&fb!==null&&fa===fb) return 'formato';
-  return 'funcional';
+  const na=normT(String(a==null?'':a));
+  const nb=normT(String(b==null?'':b));
+  if(na===nb) return 'ok';
+  const fa=normNum(na), fb=normNum(nb);
+  if(fa!==null&&fb!==null&&fa===fb) return 'ok';
+  return 'diferente';
 }
 
 // ════════════════════════════════════════════════════════
@@ -612,15 +611,19 @@ function makeComp(ro,rn,idxAnt,idxNue,forzar){
     campos[m.campo]={orig:vo,nue:vn,estado,tipo:m.tipo};
   });
 
-  // Estado general
+  // Estado general:
+  //  'ok'        → todo coincide (tras normalización)
+  //  'menor'     → difiere solo en campos informativos (no funcionales importantes)
+  //  'diferente' → difiere en al menos un campo funcional importante
+  //  no_generado / nuevo / duplicado → forzados
   let estado=forzar;
   if(!forzar){
-    const funcDifs=CAMPOS_FUNC.filter(m=>campos[m.campo]?.estado==='funcional').length;
-    const cmpDifs =CAMPOS_CMP.filter(m=>campos[m.campo]?.estado==='funcional').length;
-    const fmtDifs =CAMPOS_TODOS.filter(m=>campos[m.campo]?.estado==='formato').length;
-    if(cmpDifs>0)   estado='funcional';
-    else if(fmtDifs>0) estado='formato';
-    else            estado='ok';
+    const funcDifs=CAMPOS_FUNC.filter(m=>campos[m.campo]?.estado==='diferente').length;
+    const cmpDifs =CAMPOS_CMP.filter(m=>campos[m.campo]?.estado==='diferente')
+                     .filter(m=>m.tipo!=='funcional').length; // solo los informativos
+    if(funcDifs>0)       estado='diferente';
+    else if(cmpDifs>0)   estado='menor';
+    else                 estado='ok';
   }
 
   return {meta,campos,estado,_ro:ro,_rn:rn};
@@ -664,12 +667,12 @@ function renderColDiag(idxAnt,idxNue){
 // FILTROS
 // ════════════════════════════════════════════════════════
 const ESTADO_LABELS={
-  ok:'✅ OK — coincide',
-  formato:'⚠️ Diferencia solo de formato',
-  funcional:'❌ Diferencia funcional',
-  no_generado:'🔴 No generado por la herramienta',
-  nuevo:'🆕 Solo en nueva tabla (no existía antes)',
-  duplicado:'📎 Clave duplicada',
+  ok:          '✅ OK — datos coinciden',
+  menor:       '⚠️ Diferencia en campos informativos',
+  diferente:   '❌ Diferencia en campos importantes',
+  no_generado: '🔴 No generado por la herramienta',
+  nuevo:       '🆕 Solo en nueva tabla (no existía antes)',
+  duplicado:   '📎 Clave duplicada',
 };
 
 function poblarFiltros(){
@@ -715,12 +718,12 @@ function renderResumen(){
   document.getElementById('resumen').innerHTML=`
     <div class="rg rg-pct"><div class="rg-v">${pct}%</div><div class="rg-l">Coincidencia</div></div>
     <div class="rg rg-ok"  onclick="filtrarEstado('ok')"><div class="rg-v">${c.ok||0}</div><div class="rg-l">✅ OK</div></div>
-    <div class="rg rg-fmt" onclick="filtrarEstado('formato')"><div class="rg-v">${c.formato||0}</div><div class="rg-l">⚠️ Solo formato</div></div>
-    <div class="rg rg-fun" onclick="filtrarEstado('funcional')"><div class="rg-v">${c.funcional||0}</div><div class="rg-l">❌ Funcional</div></div>
+    <div class="rg rg-fmt" onclick="filtrarEstado('menor')"><div class="rg-v">${c.menor||0}</div><div class="rg-l">⚠️ Dif. menor</div></div>
+    <div class="rg rg-fun" onclick="filtrarEstado('diferente')"><div class="rg-v">${c.diferente||0}</div><div class="rg-l">❌ Diferencia</div></div>
     <div class="rg rg-nog" onclick="filtrarEstado('no_generado')"><div class="rg-v">${c.no_generado||0}</div><div class="rg-l">🔴 No generado</div></div>
     <div class="rg rg-new" onclick="filtrarEstado('nuevo')"><div class="rg-v">${c.nuevo||0}</div><div class="rg-l">🆕 Solo en nueva</div></div>
     <div class="rg rg-dup" onclick="filtrarEstado('duplicado')"><div class="rg-v">${c.duplicado||0}</div><div class="rg-l">📎 Duplicado</div></div>
-    <div style="margin-left:auto;font-size:.65rem;color:#999;align-self:center">${tot} registros · Clic en tarjeta para filtrar</div>`;
+    <div style="margin-left:auto;font-size:.65rem;color:#999;align-self:center">${tot} registros · Clic para filtrar</div>`;
   document.getElementById('resumen').style.display='flex';
 }
 
@@ -728,8 +731,8 @@ function renderResumen(){
 // LISTA KPI
 // ════════════════════════════════════════════════════════
 function kpiEstado(filas){
-  if(filas.some(r=>['funcional','no_generado','duplicado'].includes(r.estado))) return 'err';
-  if(filas.some(r=>['formato','nuevo'].includes(r.estado))) return 'fmt';
+  if(filas.some(r=>['diferente','no_generado','duplicado'].includes(r.estado))) return 'err';
+  if(filas.some(r=>['menor','nuevo'].includes(r.estado))) return 'fmt';
   return 'ok';
 }
 function renderKPIList(){
@@ -791,42 +794,46 @@ function renderDetalle(cod){
     <div class="ds" style="background:${pct===100?'#d4f5e0':pct>=70?'#fff3cd':'#fde8e8'};color:${pct===100?'#1a7a3a':pct>=70?'#7a5500':'#a01010'}">
       <div class="ds-v">${pct}%</div><div class="ds-l">OK</div></div>
     <div class="ds"><div class="ds-v" style="color:#1a7a3a">${c.ok||0}</div><div class="ds-l">✅ OK</div></div>
-    <div class="ds"><div class="ds-v" style="color:#7a5500">${c.formato||0}</div><div class="ds-l">⚠️ Fmt</div></div>
-    <div class="ds"><div class="ds-v" style="color:#a01010">${c.funcional||0}</div><div class="ds-l">❌ Func.</div></div>
-    <div class="ds"><div class="ds-v" style="color:#512e5f">${(c.no_generado||0)+(c.nuevo||0)+(c.duplicado||0)}</div><div class="ds-l">⚠ Otros</div></div>`;
+    <div class="ds"><div class="ds-v" style="color:#7a5500">${c.menor||0}</div><div class="ds-l">⚠️ Menor</div></div>
+    <div class="ds"><div class="ds-v" style="color:#a01010">${c.diferente||0}</div><div class="ds-l">❌ Diferencia</div></div>
+    <div class="ds"><div class="ds-v" style="color:#512e5f">${(c.no_generado||0)+(c.nuevo||0)+(c.duplicado||0)}</div><div class="ds-l">Otros</div></div>`;
 
-  // Columnas opcionales que tienen datos reales
-  const dimShow=CAMPOS_DIM.filter(m=>filas.some(r=>(r.meta[m.campo]||'')!==''));
+  // Tabla comparativa: una fila por registro, expandible para ver todos los campos
+  const CAMPOS_CLAVE_SHOW = [...CLAVES, ...CLAVE_APOYO].filter(m=>
+    filas.some(r=>(r.meta[m.campo]||'')!==''));
+  // Campos a comparar = todos (funcionales + informativos), sin claves (ya en cabecera)
+  const CAMPOS_MOSTRAR = [...CAMPOS_FUNC, ...CAMPOS_CMP.filter(m=>m.tipo!=='funcional')];
 
   const thead=`<tr>
     <th>Estado</th>
-    <th>Título</th>
-    <th>Cód. título</th>
-    ${dimShow.map(m=>`<th>${m.campo}</th>`).join('')}
-    ${CAMPOS_FUNC.map(m=>`<th class="th-func">${m.campo}</th>`).join('')}
-    <th>🔍 Detalle</th>
+    ${CAMPOS_CLAVE_SHOW.map(m=>`<th>${m.campo}</th>`).join('')}
+    ${CAMPOS_MOSTRAR.map(m=>`<th class="${m.tipo==='funcional'?'th-func':''}">${m.campo}</th>`).join('')}
+    <th>▾</th>
   </tr>`;
 
   const tbody=filas.map((r,i)=>{
-    const dimCells=dimShow.map(m=>`<td title="${r.meta[m.campo]||''}">${r.meta[m.campo]||'—'}</td>`).join('');
-    const funcCells=CAMPOS_FUNC.map(m=>{
+    const claveCells=CAMPOS_CLAVE_SHOW.map(m=>
+      `<td title="${r.meta[m.campo]||''}">${trunca(r.meta[m.campo]||'—',22)}</td>`).join('');
+
+    const cmpCells=CAMPOS_MOSTRAR.map(m=>{
       const cf=r.campos[m.campo];
-      if(!cf) return '<td class="td-func"><span class="fc-na">—</span></td>';
-      if(cf.estado==='ok')       return `<td class="td-func"><span class="fc"><span class="fc-ok" title="${cf.orig}">${cf.orig||'∅'}</span></span></td>`;
-      if(cf.estado==='formato')  return `<td class="td-func"><span class="fc fc-fmt"><span class="fv-old">${cf.orig||'∅'}</span><span class="fv-new">→ ${cf.nue||'∅'}</span></span></td>`;
-      if(cf.estado==='funcional')return `<td class="td-func"><span class="fc fc-fun"><span class="fv-old">${cf.orig||'∅'}</span><span class="fv-new">→ ${cf.nue||'∅'}</span></span></td>`;
-      if(cf.estado==='solo_orig')return `<td class="td-func"><span class="fc-na">Solo en orig.</span></td>`;
-      if(cf.estado==='solo_nue') return `<td class="td-func"><span class="fc-na">Solo en nueva</span></td>`;
-      return '<td class="td-func"><span class="fc-na">—</span></td>';
+      const esFuncional=m.tipo==='funcional';
+      const tdCls=esFuncional?'td-func':'';
+      if(!cf||cf.estado==='excluido') return `<td class="${tdCls}"><span class="fc-na">—</span></td>`;
+      if(cf.estado==='ok') return `<td class="${tdCls}" style="color:#1a7a3a" title="${cf.orig}">✅ ${trunca(cf.orig||'∅',18)}</td>`;
+      if(cf.estado==='diferente') return `<td class="${tdCls}">
+        <div style="color:#a01010;font-size:.65rem;text-decoration:line-through">${trunca(cf.orig||'∅',14)}</div>
+        <div style="color:#a01010;font-weight:700">❌ ${trunca(cf.nue||'∅',14)}</div></td>`;
+      if(cf.estado==='solo_orig') return `<td class="${tdCls}"><span class="fc-na">Solo original</span></td>`;
+      if(cf.estado==='solo_nue')  return `<td class="${tdCls}"><span class="fc-na">Solo nueva</span></td>`;
+      return `<td class="${tdCls}"><span class="fc-na">—</span></td>`;
     }).join('');
 
     const detId=`det-${i}`;
     return `<tr onclick="toggleDet('${detId}')">
       <td>${estadoHTML(r.estado)}</td>
-      <td title="${r.meta['Título']||''}">${trunca(r.meta['Título']||'—',28)}</td>
-      <td>${r.meta['Código de título']||'—'}</td>
-      ${dimCells}
-      ${funcCells}
+      ${claveCells}
+      ${cmpCells}
       <td style="color:#4a6fa5;font-size:.85rem;text-align:center">▾</td>
     </tr>
     <tr class="row-detail" id="${detId}">
@@ -838,34 +845,44 @@ function renderDetalle(cod){
     `<div class="tw"><table><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
 }
 
-function trunca(s,n){return s.length>n?s.slice(0,n)+'…':s;}
+function trunca(s,n){s=String(s||'');return s.length>n?s.slice(0,n)+'…':s;}
 function toggleDet(id){document.getElementById(id).classList.toggle('open');}
 
+// Detalle expandible: tabla con TODAS las columnas, original vs nueva
 function renderRowDetail(r){
-  const all=[...CLAVES,...CLAVE_APOYO,...CAMPOS_CMP,...CAMPOS_DIM].filter(m=>m.orig||m.nue);
-  const fields=all.map(m=>{
-    const cf=r.campos[m.campo];if(!cf) return '';
+  const todos=[...CLAVES,...CLAVE_APOYO,...CAMPOS_FUNC,...CAMPOS_CMP.filter(m=>m.tipo!=='funcional'),...CAMPOS_DIM]
+    .filter(m=>m.orig||m.nue);
+  const rows=todos.map(m=>{
+    const cf=r.campos[m.campo]; if(!cf) return '';
     const est=cf.estado;
-    const tagCls=est==='ok'?'tag-ok':est==='formato'?'tag-fmt':est==='funcional'?'tag-fun':'';
-    const tagLbl=est==='ok'?'✅ OK':est==='formato'?'⚠️ Formato':est==='funcional'?'❌ Funcional':'';
-    let vals='';
-    if(est==='ok')       vals=`<span class="rv-nue rv-ok">${cf.orig||'(vacío)'}</span>`;
-    else if(est==='solo_orig') vals=`<span class="rv-orig">${cf.orig||'∅'}</span><span class="rd-arrow">→</span><span class="rv-nue rv-na">—</span>`;
-    else if(est==='solo_nue')  vals=`<span class="rv-orig">—</span><span class="rd-arrow">→</span><span class="rv-nue rv-na">${cf.nue||'∅'}</span>`;
-    else vals=`<span class="rv-orig">${cf.orig||'∅'}</span><span class="rd-arrow">→</span><span class="rv-nue ${est==='funcional'?'rv-fun':est==='formato'?'rv-fmt':'rv-ok'}">${cf.nue||'∅'}</span>`;
-    return `<div class="rd-field">
-      <div class="rd-label">${m.campo}${tagLbl?` <span class="rd-tag ${tagCls}">${tagLbl}</span>`:''}</div>
-      <div class="rd-vals">${vals}</div>
-    </div>`;
+    let icono='', origTxt=cf.orig||'(vacío)', nueTxt=cf.nue||'(vacío)';
+    if(est==='ok')        icono='✅';
+    else if(est==='diferente') icono='❌';
+    else if(est==='solo_orig') { icono='—'; nueTxt='(no existe)'; }
+    else if(est==='solo_nue')  { icono='—'; origTxt='(no existe)'; }
+    const colorNue = est==='diferente'?'color:#a01010;font-weight:700':est==='ok'?'color:#1a7a3a':'color:#888';
+    const esFun = m.tipo==='funcional'?'background:#fafbff;':'';
+    return `<tr style="${esFun}">
+      <td style="padding:4px 10px;font-size:.72rem;font-weight:600;color:#4a6fa5;white-space:nowrap">${icono} ${m.campo}</td>
+      <td style="padding:4px 10px;font-size:.73rem;color:#444;max-width:260px;word-break:break-word">${origTxt}</td>
+      <td style="padding:4px 10px;font-size:.73rem;${colorNue};max-width:260px;word-break:break-word">${nueTxt}</td>
+    </tr>`;
   }).filter(Boolean);
-  return `<div class="rd-grid">${fields.join('')}</div>`;
+  return `<table style="width:100%;border-collapse:collapse;font-size:.73rem">
+    <thead><tr style="background:#1a2f5a;color:#fff">
+      <th style="padding:5px 10px;text-align:left">Campo</th>
+      <th style="padding:5px 10px;text-align:left">Tabla original</th>
+      <th style="padding:5px 10px;text-align:left">Nueva tabla</th>
+    </tr></thead>
+    <tbody>${rows.join('')}</tbody>
+  </table>`;
 }
 
 function estadoHTML(est){
   const m={
     ok:          '<span class="est est-ok">✅ OK</span>',
-    formato:     '<span class="est est-fmt">⚠️ Solo formato</span>',
-    funcional:   '<span class="est est-fun">❌ Dif. funcional</span>',
+    menor:       '<span class="est est-fmt">⚠️ Dif. menor</span>',
+    diferente:   '<span class="est est-fun">❌ Diferencia</span>',
     no_generado: '<span class="est est-nog">🔴 No generado</span>',
     nuevo:       '<span class="est est-new">🆕 Solo en nueva</span>',
     duplicado:   '<span class="est est-dup">📎 Duplicado</span>',
