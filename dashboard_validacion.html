@@ -185,10 +185,25 @@ td.td-func{border-left:2px solid #e0e8f8}
     <label for="f-ant" class="uf" id="lbl-ant">Subir fichero…</label>
     <input type="file" id="f-ant" accept=".csv,.xlsx,.xls">
   </div>
+  <div style="display:flex;flex-direction:column;gap:1px">
+    <span style="font-size:.6rem;font-weight:700;color:#7eb8f7;text-transform:uppercase;letter-spacing:.06em">Fila cabecera</span>
+    <input type="number" id="hrow-ant" min="1" max="30" value="4"
+      style="width:52px;padding:3px 6px;border:1px solid #3a5a8a;border-radius:5px;
+             background:#0d2040;color:#fff;font-size:.8rem;text-align:center"
+      title="Fila donde están los encabezados en la tabla original (por defecto 4)">
+  </div>
+  <div class="tb-sep"></div>
   <div class="up-slot">
     <label for="f-nue">📄 Nueva tabla</label>
     <label for="f-nue" class="uf" id="lbl-nue">Subir fichero…</label>
     <input type="file" id="f-nue" accept=".csv,.xlsx,.xls">
+  </div>
+  <div style="display:flex;flex-direction:column;gap:1px">
+    <span style="font-size:.6rem;font-weight:700;color:#7eb8f7;text-transform:uppercase;letter-spacing:.06em">Fila cabecera</span>
+    <input type="number" id="hrow-nue" min="1" max="30" value="4"
+      style="width:52px;padding:3px 6px;border:1px solid #3a5a8a;border-radius:5px;
+             background:#0d2040;color:#fff;font-size:.8rem;text-align:center"
+      title="Fila donde están los encabezados en la nueva tabla (por defecto 4)">
   </div>
   <div class="tb-sep"></div>
   <button id="btn-demo" onclick="cargarDemo()">🗂 Datos de ejemplo</button>
@@ -383,43 +398,34 @@ function cmpVal(a,b){
 // conocidas del MAPEO contiene (resuelve el caso en que los
 // encabezados no están en la fila 1 sino en la 4, 5, etc.)
 // ════════════════════════════════════════════════════════
-const MAPEO_NORM_SET = new Set(
-  MAPEO.flatMap(m=>[m.orig,m.nue]).filter(Boolean).map(normCol)
-);
+// Carga un fichero usando la fila de cabecera que el usuario indica
+// en el input numérico (hRowInputId). Si el fichero cambia, re-lee
+// con el valor actual del input; si el input cambia, re-lee el fichero.
+function setupFileReader(inputId, lblId, hRowInputId, key){
+  const fileInput = document.getElementById(inputId);
+  const hRowInput = document.getElementById(hRowInputId);
 
-function detectHeaderRow(ws){
-  const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
-  let best=0, bestScore=-1;
-  for(let i=0;i<Math.min(15,raw.length);i++){
-    const score=raw[i].filter(c=>MAPEO_NORM_SET.has(normCol(String(c||'')))).length;
-    if(score>bestScore){bestScore=score;best=i;}
-  }
-  return best; // índice 0-based de la fila que tiene los encabezados
-}
-
-function readFile(input,lblId,key){
-  input.addEventListener('change',function(){
-    const file=this.files[0];if(!file)return;
-    document.getElementById(lblId).textContent=file.name;
+  function doRead(file){
+    if(!file) return;
+    const hRow = Math.max(0, parseInt(hRowInput.value||'1',10) - 1); // convertir 1-based → 0-based
+    document.getElementById(lblId).textContent = file.name + (hRow>0 ? ` (fila ${hRow+1})` : '');
     document.getElementById(lblId).classList.add('ok');
-    const reader=new FileReader();
-    reader.onload=e=>{
-      const wb=XLSX.read(e.target.result,{type:'binary',raw:false});
-      const ws=wb.Sheets[wb.SheetNames[0]];
-      const hRow=detectHeaderRow(ws);
-      G[key]=XLSX.utils.sheet_to_json(ws,{range:hRow,defval:'',raw:false});
-      if(hRow>0){
-        const lbl=document.getElementById(lblId);
-        lbl.title=`Encabezados detectados en fila ${hRow+1}`;
-        lbl.textContent=file.name+` (cabecera: fila ${hRow+1})`;
-      }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const wb = XLSX.read(e.target.result, {type:'binary', raw:false});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      G[key] = XLSX.utils.sheet_to_json(ws, {range:hRow, defval:'', raw:false});
+      document.getElementById('btn-analizar').disabled = !(G.ant.length && G.nue.length);
     };
     reader.readAsBinaryString(file);
-    setTimeout(()=>{document.getElementById('btn-analizar').disabled=!(G.ant.length&&G.nue.length);},350);
-  });
+  }
+
+  fileInput.addEventListener('change', function(){ doRead(this.files[0]); });
+  // Si el usuario cambia la fila de cabecera después de subir el fichero, re-leer
+  hRowInput.addEventListener('change', function(){ doRead(fileInput.files[0]); });
 }
-readFile(document.getElementById('f-ant'),'lbl-ant','ant');
-readFile(document.getElementById('f-nue'),'lbl-nue','nue');
+setupFileReader('f-ant','lbl-ant','hrow-ant','ant');
+setupFileReader('f-nue','lbl-nue','hrow-nue','nue');
 
 // ════════════════════════════════════════════════════════
 // CONSTRUCCIÓN DE CLAVE NORMALIZADA
@@ -781,10 +787,13 @@ function mostrarUI(){
 // ════════════════════════════════════════════════════════
 function cargarDemo(){
   G.ant=DEMO_ANT; G.nue=DEMO_NUE;
-  document.getElementById('lbl-ant').textContent='tabla_plana_antigua.csv';
+  document.getElementById('lbl-ant').textContent='tabla_plana_antigua.csv (demo)';
   document.getElementById('lbl-ant').classList.add('ok');
-  document.getElementById('lbl-nue').textContent='tabla_plana_nueva.csv';
+  document.getElementById('lbl-nue').textContent='tabla_plana_nueva.csv (demo)';
   document.getElementById('lbl-nue').classList.add('ok');
+  // Los datos de ejemplo ya tienen cabeceras en fila 1
+  document.getElementById('hrow-ant').value='1';
+  document.getElementById('hrow-nue').value='1';
   document.getElementById('btn-demo').style.display='none';
   document.getElementById('btn-limpiar').style.display='inline-block';
   document.getElementById('btn-analizar').disabled=false;
