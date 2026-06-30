@@ -425,13 +425,16 @@ function setupFileReader(inputId, lblId, hRowInputId, key){
       try {
         const wb = XLSX.read(e.target.result, {type:'binary', raw:false});
 
-        // Buscar primero la hoja "TABLA PLANA ACTUALIZADA" (insensible a mayúsc/tildes)
-        // Si no existe, usar la que más columnas del MAPEO reconozca
-        const TARGET_SHEET = 'TABLA PLANA ACTUALIZADA';
-        const normSheetName = s => s.toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
-        let bestSheet = wb.SheetNames.find(s => normSheetName(s) === normSheetName(TARGET_SHEET))
-                     || null;
+        // Hojas prioritarias (por nombre normalizado, insensible a mayúsc/tildes/espacios)
+        const TARGET_SHEETS = ['TABLA PLANA ACTUALIZADA', 'RESULTADOS', 'DATOS', 'DATA', 'TABLA PLANA'];
+        const normSN = s => s.toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+        let bestSheet = null;
+        for(const t of TARGET_SHEETS){
+          bestSheet = wb.SheetNames.find(s => normSN(s) === normSN(t)) || null;
+          if(bestSheet) break;
+        }
         if(!bestSheet){
+          // Fallback: la hoja con más columnas del MAPEO
           let bestScore = -1;
           for(const sName of wb.SheetNames){
             const ws = wb.Sheets[sName];
