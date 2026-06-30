@@ -128,6 +128,12 @@ thead th{background:#1a2f5a;color:#fff;padding:8px 10px;text-align:left;
   font-size:.7rem;font-weight:600;white-space:nowrap;position:sticky;top:0;z-index:1}
 thead th.th-func{background:#2d4a7a;border-left:2px solid #4a6fa5}
 tbody tr{border-bottom:1px solid #eef0f8;transition:background .1s;cursor:pointer}
+tbody tr.fila-dif{background:#fff8f8}
+tbody tr.fila-dif:hover{background:#ffeaea}
+tbody tr.fila-ok{background:#f8fff9}
+td.cel-dif{background:#fde8e8!important;border-left:3px solid #e74c3c}
+td.cel-ok{background:#edfbf1!important}
+td.cel-na{color:#bbb;font-style:italic;font-size:.7rem}
 tbody tr:hover{background:#f4f6fb}
 tbody td{padding:7px 10px;font-size:.75rem;vertical-align:middle;white-space:nowrap;
   max-width:200px;overflow:hidden;text-overflow:ellipsis}
@@ -587,6 +593,20 @@ function analizar(){
   }
 
   poblarFiltros(); renderResumen(); renderKPIList(); mostrarUI();
+
+  // Ocultar paneles de diagnóstico de carga (ya cumplieron su función)
+  ['debug-ant','debug-nue','col-diag'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.display='none';
+  });
+
+  // Auto-seleccionar el primer KPI con diferencias (o el primero que haya)
+  const primeroConDif = G.comp.find(r=>r.estado==='diferente'||r.estado==='menor');
+  const primero = primeroConDif || G.comp[0];
+  if(primero){
+    const cod = primero.meta['Código KPI'];
+    if(cod) setTimeout(()=>selKPI(cod), 50);
+  }
 }
 
 function makeComp(ro,rn,idxAnt,idxNue,forzar){
@@ -812,29 +832,37 @@ function renderDetalle(cod){
   </tr>`;
 
   const tbody=filas.map((r,i)=>{
+    const hayDif = r.estado==='diferente'||r.estado==='menor';
+    const filaCls = r.estado==='ok'?'fila-ok':r.estado==='diferente'||r.estado==='menor'?'fila-dif':'';
+
     const claveCells=CAMPOS_CLAVE_SHOW.map(m=>
       `<td title="${r.meta[m.campo]||''}">${trunca(r.meta[m.campo]||'—',22)}</td>`).join('');
 
     const cmpCells=CAMPOS_MOSTRAR.map(m=>{
       const cf=r.campos[m.campo];
-      const esFuncional=m.tipo==='funcional';
-      const tdCls=esFuncional?'td-func':'';
-      if(!cf||cf.estado==='excluido') return `<td class="${tdCls}"><span class="fc-na">—</span></td>`;
-      if(cf.estado==='ok') return `<td class="${tdCls}" style="color:#1a7a3a" title="${cf.orig}">✅ ${trunca(cf.orig||'∅',18)}</td>`;
-      if(cf.estado==='diferente') return `<td class="${tdCls}">
-        <div style="color:#a01010;font-size:.65rem;text-decoration:line-through">${trunca(cf.orig||'∅',14)}</div>
-        <div style="color:#a01010;font-weight:700">❌ ${trunca(cf.nue||'∅',14)}</div></td>`;
-      if(cf.estado==='solo_orig') return `<td class="${tdCls}"><span class="fc-na">Solo original</span></td>`;
-      if(cf.estado==='solo_nue')  return `<td class="${tdCls}"><span class="fc-na">Solo nueva</span></td>`;
-      return `<td class="${tdCls}"><span class="fc-na">—</span></td>`;
+      const esFun=m.tipo==='funcional';
+      if(!cf||cf.estado==='excluido') return `<td class="cel-na">—</td>`;
+      if(cf.estado==='ok'){
+        return `<td class="${esFun?'cel-ok':''}" title="Original: ${cf.orig}&#10;Nueva: ${cf.nue}">
+          <span style="color:#1a7a3a;font-size:.72rem">✅</span>
+          <span style="font-size:.72rem">${trunca(cf.orig||'(vacío)',20)}</span></td>`;
+      }
+      if(cf.estado==='diferente'){
+        return `<td class="cel-dif">
+          <div style="font-size:.65rem;color:#888;margin-bottom:1px">Orig: <span style="color:#555">${trunca(cf.orig||'(vacío)',18)}</span></div>
+          <div style="font-size:.75rem;font-weight:700;color:#c0392b">❌ ${trunca(cf.nue||'(vacío)',18)}</div></td>`;
+      }
+      if(cf.estado==='solo_orig') return `<td class="cel-na">Solo en original</td>`;
+      if(cf.estado==='solo_nue')  return `<td class="cel-na">Solo en nueva</td>`;
+      return `<td class="cel-na">—</td>`;
     }).join('');
 
     const detId=`det-${i}`;
-    return `<tr onclick="toggleDet('${detId}')">
+    return `<tr class="${filaCls}" onclick="toggleDet('${detId}')">
       <td>${estadoHTML(r.estado)}</td>
       ${claveCells}
       ${cmpCells}
-      <td style="color:#4a6fa5;font-size:.85rem;text-align:center">▾</td>
+      <td style="color:#4a6fa5;font-size:.85rem;text-align:center;white-space:nowrap">▾ ver todo</td>
     </tr>
     <tr class="row-detail" id="${detId}">
       <td colspan="999">${renderRowDetail(r)}</td>
