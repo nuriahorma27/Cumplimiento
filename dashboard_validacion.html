@@ -332,13 +332,20 @@ const G={ant:[],nue:[],comp:[],kpiActual:null,idxAnt:{},idxNue:{}};
 // normalizado, no por texto exacto
 // ════════════════════════════════════════════════════════
 function normCol(s){
-  // Convierte cualquier nombre de columna a forma canónica para lookup
+  // Convierte cualquier nombre de columna a forma canónica para lookup.
+  // Elimina partículas conectoras (_de_, _o_, _del_, _la_, _los_, _las_, _un_, _una_)
+  // para que "ambito_de_cumplimiento" == "ambito_cumplimiento", etc.
   return s.toString().trim()
     .toUpperCase()
-    .normalize('NFD').replace(/[̀-ͯ]/g,'')   // quitar tildes
-    .replace(/[^A-Z0-9]+/g,'_')               // no-alfanumérico → _
-    .replace(/_+/g,'_')                        // múltiples _ → uno
-    .replace(/^_|_$/g,'');                     // trim _
+    .normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^A-Z0-9]+/g,'_')
+    .replace(/_+/g,'_')
+    .replace(/^_|_$/g,'')
+    .replace(/_(DE|O|DEL|LA|LOS|LAS|UN|UNA)_/g,'_')  // eliminar partículas
+    .replace(/_(DE|O|DEL|LA|LOS|LAS|UN|UNA)$/g,'')    // y al final
+    .replace(/^(DE|O|DEL|LA|LOS|LAS|UN|UNA)_/g,'')    // y al inicio
+    .replace(/_+/g,'_')
+    .replace(/^_|_$/g,'');
 }
 
 // Construye índice: normCol(nombreReal) → nombreReal
