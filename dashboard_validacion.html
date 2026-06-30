@@ -418,15 +418,22 @@ function setupFileReader(inputId, lblId, hRowInputId, key){
       try {
         const wb = XLSX.read(e.target.result, {type:'binary', raw:false});
 
-        // Escanear todas las hojas y elegir la que más columnas del MAPEO reconozca
-        let bestSheet = wb.SheetNames[0];
-        let bestScore = -1;
-        for(const sName of wb.SheetNames){
-          const ws = wb.Sheets[sName];
-          const sample = XLSX.utils.sheet_to_json(ws, {range:hRow, defval:'', raw:false, header:undefined});
-          if(!sample.length) continue;
-          const score = Object.keys(sample[0]).filter(c => MAPEO_NORM_SET.has(normCol(c))).length;
-          if(score > bestScore){ bestScore = score; bestSheet = sName; }
+        // Buscar primero la hoja "TABLA PLANA ACTUALIZADA" (insensible a mayúsc/tildes)
+        // Si no existe, usar la que más columnas del MAPEO reconozca
+        const TARGET_SHEET = 'TABLA PLANA ACTUALIZADA';
+        const normSheetName = s => s.toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+        let bestSheet = wb.SheetNames.find(s => normSheetName(s) === normSheetName(TARGET_SHEET))
+                     || null;
+        if(!bestSheet){
+          let bestScore = -1;
+          for(const sName of wb.SheetNames){
+            const ws = wb.Sheets[sName];
+            const sample = XLSX.utils.sheet_to_json(ws, {range:hRow, defval:'', raw:false});
+            if(!sample.length) continue;
+            const score = Object.keys(sample[0]).filter(c => MAPEO_NORM_SET.has(normCol(c))).length;
+            if(score > bestScore){ bestScore = score; bestSheet = sName; }
+          }
+          bestSheet = bestSheet || wb.SheetNames[0];
         }
 
         const ws = wb.Sheets[bestSheet];
