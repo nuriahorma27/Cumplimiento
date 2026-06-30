@@ -53,7 +53,15 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f8;color:#1a2f5a;fo
 #btn-limpiar{display:none;background:none;border:1px solid #4a6a9a;color:#aabbd4;
   border-radius:7px;padding:6px 12px;font-size:.72rem;font-weight:700;cursor:pointer;}
 #btn-limpiar:hover{background:#243d6a}
-#layout{display:flex;margin-top:56px;height:calc(100vh - 56px)}
+/* ── Tabs ─────────────────────────────────────────────── */
+#tabs{position:fixed;top:56px;left:0;right:0;height:36px;background:#13254a;
+  display:flex;align-items:flex-end;padding:0 18px;z-index:190;
+  border-bottom:2px solid #4a6fa5;gap:4px}
+.tab-btn{padding:6px 18px;font-size:.75rem;font-weight:700;border:none;cursor:pointer;
+  border-radius:6px 6px 0 0;background:transparent;color:#7eb8f7;letter-spacing:.03em;transition:.15s}
+.tab-btn:hover{background:#1e3a6a;color:#fff}
+.tab-btn.active{background:#f0f2f8;color:#1a2f5a}
+#layout{display:flex;margin-top:92px;height:calc(100vh - 92px)}
 #panel-kpis{width:270px;flex-shrink:0;background:#fff;border-right:1px solid #dde3f0;
   display:flex;flex-direction:column;overflow:hidden}
 .ph{padding:10px 12px 6px;border-bottom:1px solid #eef0f8;font-size:.65rem;
@@ -180,6 +188,40 @@ td.td-func{border-left:2px solid #e0e8f8}
 .cd-table td{padding:5px 10px;border-bottom:1px solid #eef0f8}
 .cd-found{color:#1a7a3a;font-weight:600}
 .cd-miss{color:#a01010;font-weight:600}
+/* ── Roadmap tab ──────────────────────────────────────── */
+#tab-roadmap{display:none;height:100%;overflow-y:auto;padding:24px;gap:24px;
+  flex-direction:row;align-items:flex-start;flex-wrap:wrap}
+#tab-roadmap.active{display:flex}
+.rm-card{background:#fff;border-radius:12px;box-shadow:0 1px 6px rgba(0,0,0,.08);
+  padding:20px 24px;min-width:280px;flex:1;max-width:480px}
+.rm-card h2{font-size:.88rem;font-weight:800;color:#1a2f5a;margin:0 0 16px;
+  text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #eef0f8;padding-bottom:8px}
+.rm-card h3{font-size:.78rem;font-weight:700;color:#4a6fa5;margin:14px 0 8px}
+.rm-check-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;
+  border-bottom:1px solid #f4f6fb}
+.rm-check-row:last-child{border:none}
+.rm-check-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;
+  accent-color:#4a9ff5;flex-shrink:0;margin-top:1px}
+.rm-check-row label{font-size:.82rem;color:#2a3f6a;cursor:pointer;line-height:1.4}
+.rm-check-row.checked label{color:#1a7a3a;text-decoration:line-through;opacity:.65}
+.rm-progress{height:6px;background:#eef0f8;border-radius:3px;margin:12px 0 4px;overflow:hidden}
+.rm-progress-bar{height:100%;background:#4a9ff5;border-radius:3px;transition:.3s}
+.rm-prog-txt{font-size:.7rem;color:#888;margin-bottom:12px}
+/* KPI checklist */
+#rm-kpi-list{max-height:420px;overflow-y:auto;margin-top:8px}
+.rm-kpi-row{display:flex;align-items:center;gap:10px;padding:6px 4px;
+  border-bottom:1px solid #f4f6fb;cursor:pointer}
+.rm-kpi-row:hover{background:#f8f9fc}
+.rm-kpi-row input[type=checkbox]{width:15px;height:15px;accent-color:#4a9ff5;flex-shrink:0}
+.rm-kpi-cod{font-size:.72rem;font-weight:700;color:#1a2f5a;min-width:80px}
+.rm-kpi-nom{font-size:.75rem;color:#4a6fa5;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rm-kpi-row.checked .rm-kpi-cod,.rm-kpi-row.checked .rm-kpi-nom{color:#1a7a3a;opacity:.6;text-decoration:line-through}
+#rm-kpi-add{display:flex;gap:6px;margin-bottom:10px}
+#rm-kpi-add input{flex:1;padding:5px 8px;border:1px solid #c8d4e8;border-radius:6px;font-size:.78rem}
+#rm-kpi-add button{padding:5px 10px;border:none;border-radius:6px;background:#4a9ff5;
+  color:#fff;font-size:.75rem;font-weight:700;cursor:pointer}
+.rm-btn-clear{margin-top:12px;font-size:.72rem;color:#a01010;background:none;border:none;cursor:pointer;padding:0}
+.rm-btn-clear:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -216,6 +258,61 @@ td.td-func{border-left:2px solid #e0e8f8}
   <button id="btn-demo" onclick="cargarDemo()">🗂 Datos de ejemplo</button>
   <button id="btn-limpiar" onclick="limpiar()">✕ Limpiar</button>
   <button id="btn-analizar" disabled onclick="analizar()">▶ Analizar</button>
+</div>
+
+<div id="tabs">
+  <button class="tab-btn active" onclick="switchTab('validacion')">📊 Validación</button>
+  <button class="tab-btn" onclick="switchTab('roadmap')">🗺 Roadmap de revisión</button>
+</div>
+
+<div id="tab-roadmap">
+  <!-- BLOQUE 1: Formularios -->
+  <div class="rm-card">
+    <h2>Revisión de formularios</h2>
+
+    <h3>📋 Formulario FP</h3>
+    <div class="rm-check-row" id="rmrow-fp">
+      <input type="checkbox" id="rm-fp" onchange="rmSave()">
+      <label for="rm-fp">Formulario FP revisado</label>
+    </div>
+
+    <h3>📋 Cuestionario UAX</h3>
+    <div class="rm-check-row" id="rmrow-uax-grado">
+      <input type="checkbox" id="rm-uax-grado" onchange="rmSave()">
+      <label for="rm-uax-grado">Grado</label>
+    </div>
+    <div class="rm-check-row" id="rmrow-uax-doctorado">
+      <input type="checkbox" id="rm-uax-doctorado" onchange="rmSave()">
+      <label for="rm-uax-doctorado">Doctorado</label>
+    </div>
+    <div class="rm-check-row" id="rmrow-uax-facultad">
+      <input type="checkbox" id="rm-uax-facultad" onchange="rmSave()">
+      <label for="rm-uax-facultad">Facultad</label>
+    </div>
+    <div class="rm-check-row" id="rmrow-uax-universidad">
+      <input type="checkbox" id="rm-uax-universidad" onchange="rmSave()">
+      <label for="rm-uax-universidad">Universidad</label>
+    </div>
+
+    <div class="rm-progress"><div class="rm-progress-bar" id="rm-form-bar"></div></div>
+    <div class="rm-prog-txt" id="rm-form-txt">0 / 5 formularios revisados</div>
+    <button class="rm-btn-clear" onclick="rmClearForms()">✕ Limpiar formularios</button>
+  </div>
+
+  <!-- BLOQUE 2: KPIs revisados -->
+  <div class="rm-card" style="flex:2">
+    <h2>KPIs revisados</h2>
+    <div class="rm-prog-txt" id="rm-kpi-prog-txt">0 revisados</div>
+    <div class="rm-progress"><div class="rm-progress-bar" id="rm-kpi-bar"></div></div>
+
+    <div id="rm-kpi-add">
+      <input type="text" id="rm-kpi-input" placeholder="Añadir KPI manualmente (ej: OYD0001)" onkeydown="if(event.key==='Enter')rmAddKPI()">
+      <button onclick="rmAddKPI()">+ Añadir</button>
+    </div>
+
+    <div id="rm-kpi-list"></div>
+    <button class="rm-btn-clear" onclick="rmClearKPIs()">✕ Limpiar lista KPIs</button>
+  </div>
 </div>
 
 <div id="layout">
@@ -647,6 +744,7 @@ function analizar(){
   }
 
   poblarFiltros(); renderResumen(); renderKPIList(); mostrarUI();
+  rmSyncFromAnalysis();
 
   // Ocultar paneles de diagnóstico de carga (ya cumplieron su función)
   ['debug-ant','debug-nue','col-diag'].forEach(id=>{
@@ -1072,6 +1170,150 @@ function exportTodo(){
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Informe_Completo');
   XLSX.writeFile(wb,'informe_validacion_completo.xlsx');
+}
+
+// ════════════════════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════════════════════
+function switchTab(tab){
+  const isRoadmap=tab==='roadmap';
+  document.getElementById('layout').style.display=isRoadmap?'none':'flex';
+  document.getElementById('tab-roadmap').classList.toggle('active',isRoadmap);
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+    b.classList.toggle('active',(i===0&&!isRoadmap)||(i===1&&isRoadmap));
+  });
+  if(isRoadmap) rmRender();
+}
+
+// ════════════════════════════════════════════════════════
+// ROADMAP — persistencia en localStorage
+// ════════════════════════════════════════════════════════
+const RM_KEY='cumpl_roadmap_v1';
+
+function rmLoad(){
+  try{ return JSON.parse(localStorage.getItem(RM_KEY)||'{}'); }
+  catch(e){ return {}; }
+}
+function rmSave(){
+  const data=rmLoad();
+  // formularios
+  ['fp','uax-grado','uax-doctorado','uax-facultad','uax-universidad'].forEach(id=>{
+    const el=document.getElementById('rm-'+id);
+    if(el) data['form_'+id]=el.checked;
+  });
+  localStorage.setItem(RM_KEY,JSON.stringify(data));
+  rmUpdateFormProgress();
+}
+
+function rmUpdateFormProgress(){
+  const ids=['fp','uax-grado','uax-doctorado','uax-facultad','uax-universidad'];
+  const done=ids.filter(id=>{
+    const el=document.getElementById('rm-'+id);
+    return el&&el.checked;
+  }).length;
+  const pct=Math.round(done/ids.length*100);
+  document.getElementById('rm-form-bar').style.width=pct+'%';
+  document.getElementById('rm-form-txt').textContent=`${done} / ${ids.length} formularios revisados`;
+  // estilo tachado en filas
+  ids.forEach(id=>{
+    const row=document.getElementById('rmrow-'+id);
+    const el=document.getElementById('rm-'+id);
+    if(row&&el) row.classList.toggle('checked',el.checked);
+  });
+}
+
+// ── KPI checklist ─────────────────────────────────────
+function rmGetKPIs(){
+  const data=rmLoad();
+  return data.kpis||[];  // [{cod, nom, checked}]
+}
+function rmSetKPIs(kpis){
+  const data=rmLoad();
+  data.kpis=kpis;
+  localStorage.setItem(RM_KEY,JSON.stringify(data));
+}
+
+function rmSyncFromAnalysis(){
+  // Si hay análisis cargado, sincroniza KPIs únicos automáticamente
+  if(!G.comp.length) return;
+  const existing=rmGetKPIs();
+  const existCods=new Set(existing.map(k=>k.cod));
+  const kpisData={};
+  G.comp.forEach(r=>{
+    const cod=r.meta['Código KPI']||'';
+    const nom=r.meta['Nombre KPI']||'';
+    if(cod&&!kpisData[cod]) kpisData[cod]={cod,nom};
+  });
+  const nuevos=Object.values(kpisData).filter(k=>!existCods.has(k.cod))
+    .map(k=>({cod:k.cod,nom:k.nom,checked:false}));
+  if(nuevos.length) rmSetKPIs([...existing,...nuevos]);
+}
+
+function rmToggleKPI(cod){
+  const kpis=rmGetKPIs();
+  const k=kpis.find(k=>k.cod===cod);
+  if(k) k.checked=!k.checked;
+  rmSetKPIs(kpis);
+  rmRenderKPIs();
+}
+
+function rmAddKPI(){
+  const inp=document.getElementById('rm-kpi-input');
+  const val=inp.value.trim().toUpperCase();
+  if(!val) return;
+  const kpis=rmGetKPIs();
+  if(kpis.find(k=>k.cod===val)){inp.value='';return;}
+  kpis.push({cod:val,nom:'',checked:false});
+  rmSetKPIs(kpis);
+  inp.value='';
+  rmRenderKPIs();
+}
+
+function rmClearForms(){
+  if(!confirm('¿Limpiar todos los formularios revisados?')) return;
+  const data=rmLoad();
+  ['fp','uax-grado','uax-doctorado','uax-facultad','uax-universidad'].forEach(id=>{
+    data['form_'+id]=false;
+    const el=document.getElementById('rm-'+id);
+    if(el) el.checked=false;
+  });
+  localStorage.setItem(RM_KEY,JSON.stringify(data));
+  rmUpdateFormProgress();
+}
+
+function rmClearKPIs(){
+  if(!confirm('¿Borrar toda la lista de KPIs revisados?')) return;
+  const data=rmLoad(); data.kpis=[];
+  localStorage.setItem(RM_KEY,JSON.stringify(data));
+  rmRenderKPIs();
+}
+
+function rmRenderKPIs(){
+  rmSyncFromAnalysis();
+  const kpis=rmGetKPIs().sort((a,b)=>a.cod.localeCompare(b.cod));
+  const done=kpis.filter(k=>k.checked).length;
+  const tot=kpis.length;
+  const pct=tot?Math.round(done/tot*100):0;
+  document.getElementById('rm-kpi-bar').style.width=pct+'%';
+  document.getElementById('rm-kpi-prog-txt').textContent=
+    tot?`${done} / ${tot} KPIs revisados (${pct}%)`:'Sin KPIs — carga un análisis o añade manualmente';
+  document.getElementById('rm-kpi-list').innerHTML=kpis.map(k=>`
+    <div class="rm-kpi-row${k.checked?' checked':''}" onclick="rmToggleKPI('${k.cod}')">
+      <input type="checkbox" ${k.checked?'checked':''} onclick="event.stopPropagation();rmToggleKPI('${k.cod}')">
+      <span class="rm-kpi-cod">${k.cod}</span>
+      <span class="rm-kpi-nom">${k.nom||'—'}</span>
+    </div>`).join('');
+}
+
+function rmRender(){
+  // Restaurar checks de formularios
+  const data=rmLoad();
+  ['fp','uax-grado','uax-doctorado','uax-facultad','uax-universidad'].forEach(id=>{
+    const el=document.getElementById('rm-'+id);
+    if(el) el.checked=!!(data['form_'+id]);
+  });
+  rmUpdateFormProgress();
+  rmRenderKPIs();
 }
 </script>
 </body>
