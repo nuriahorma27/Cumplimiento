@@ -764,18 +764,27 @@ function filtrarEstado(e){document.getElementById('flt-est').value=e;aplicarFilt
 // RESUMEN GLOBAL
 // ════════════════════════════════════════════════════════
 function renderResumen(){
-  const rows=filtrado(),c={};
-  rows.forEach(r=>c[r.estado]=(c[r.estado]||0)+1);
-  const tot=rows.length,pct=tot?Math.round((c.ok||0)/tot*100):0;
+  // Totales siempre sobre TODOS los registros (sin filtro de estado)
+  // para que los contadores no cambien al filtrar por estado
+  const f=getFiltros();
+  const global=G.comp.filter(r=>
+    (!f.tipo||r.meta['Tipo de formación']===f.tipo)&&
+    (!f.fac ||r.meta['Facultad/Centro']===f.fac)&&
+    (!f.mod ||r.meta['Modalidad']===f.mod));  // NO filtra por f.est
+  const c={};
+  global.forEach(r=>c[r.estado]=(c[r.estado]||0)+1);
+  const tot=global.length,pct=tot?Math.round((c.ok||0)/tot*100):0;
+  const estAct=f.est;
+  const sel=(e)=>estAct===e?'style="box-shadow:0 0 0 2px #4a6fa5;font-weight:900"':'';
   document.getElementById('resumen').innerHTML=`
     <div class="rg rg-pct"><div class="rg-v">${pct}%</div><div class="rg-l">Coincidencia</div></div>
-    <div class="rg rg-ok"  onclick="filtrarEstado('ok')"><div class="rg-v">${c.ok||0}</div><div class="rg-l">✅ OK</div></div>
-    <div class="rg rg-fmt" onclick="filtrarEstado('menor')"><div class="rg-v">${c.menor||0}</div><div class="rg-l">⚠️ Dif. menor</div></div>
-    <div class="rg rg-fun" onclick="filtrarEstado('diferente')"><div class="rg-v">${c.diferente||0}</div><div class="rg-l">❌ Diferencia</div></div>
-    <div class="rg rg-nog" onclick="filtrarEstado('no_generado')"><div class="rg-v">${c.no_generado||0}</div><div class="rg-l">🔴 No generado</div></div>
-    <div class="rg rg-new" onclick="filtrarEstado('nuevo')"><div class="rg-v">${c.nuevo||0}</div><div class="rg-l">🆕 Solo en nueva</div></div>
-    <div class="rg rg-dup" onclick="filtrarEstado('duplicado')"><div class="rg-v">${c.duplicado||0}</div><div class="rg-l">📎 Duplicado</div></div>
-    <div style="margin-left:auto;font-size:.65rem;color:#999;align-self:center">${tot} registros · Clic para filtrar</div>`;
+    <div class="rg rg-ok"  onclick="filtrarEstado('ok')"        ${sel('ok')}><div class="rg-v">${c.ok||0}</div><div class="rg-l">✅ Todo OK</div></div>
+    <div class="rg rg-fmt" onclick="filtrarEstado('menor')"     ${sel('menor')}><div class="rg-v">${c.menor||0}</div><div class="rg-l">⚠️ Dif. menor</div></div>
+    <div class="rg rg-fun" onclick="filtrarEstado('diferente')" ${sel('diferente')}><div class="rg-v">${c.diferente||0}</div><div class="rg-l">❌ Algo mal</div></div>
+    <div class="rg rg-nog" onclick="filtrarEstado('no_generado')" ${sel('no_generado')}><div class="rg-v">${c.no_generado||0}</div><div class="rg-l">🔴 No generado</div></div>
+    <div class="rg rg-new" onclick="filtrarEstado('nuevo')"     ${sel('nuevo')}><div class="rg-v">${c.nuevo||0}</div><div class="rg-l">🆕 Solo en nueva</div></div>
+    <div class="rg rg-dup" onclick="filtrarEstado('duplicado')" ${sel('duplicado')}><div class="rg-v">${c.duplicado||0}</div><div class="rg-l">📎 Duplicado</div></div>
+    <div style="margin-left:auto;font-size:.65rem;color:#999;align-self:center">${tot} totales${estAct?' · filtrando por <b>'+estAct+'</b>':''} · Clic para filtrar</div>`;
   document.getElementById('resumen').style.display='flex';
 }
 
